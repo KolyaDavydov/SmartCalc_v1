@@ -3,45 +3,48 @@
 #include <math.h>
 
 int main() {
-  char str[] = "1+((0-6)*8)(4)";
+  char str[] = "10-(s(-4)+5)+(4-2.345)";
 
 
   printf("str - %s", str);
   stack_t *stack = NULL;
   int error = expression_to_list(str, &stack);
-  printf("error %d\n", error);
-  print(stack);
   
   if (error == OK) {
     stack_t *polish_notation = NULL;
-    to_polish_notation(stack, &polish_notation);
-
-    print(polish_notation);
-
-    Calc(&polish_notation);
-    double result = polish_notation->value;
-    printf("result = %f", result);
-
+    error = to_polish_notation(stack, &polish_notation);
+    if(error == OK) {
+      
+      double result = calculation(&polish_notation);
+      printf("result = %f\n", result);
+    }
     del_stack(&polish_notation);
   }
-
   del_stack(&stack);
-
   return 0;
 }
 
-void to_polish_notation(stack_t *stack, stack_t **polish_notation) {
-  stack_t *tmp = {0};
+/**
+ * @brief преобразует стэк с обычной записью в стэк обратной польской нотацией
+ *
+ * @param stack стэк с обычной записью лексем
+ * 
+ * @param polish_notation стэк лексем обратной польской нотации
+ *
+ * @returns номер ошибки, OK или ERR
+*/
+int to_polish_notation(stack_t *stack, stack_t **polish_notation) {
+  int error = OK;
+  stack_t *tmp = {0}; // вспомогательный стэк
   
-  while (stack) {
+  while (stack && error != ERR) {
     if (peek_type(stack) != CloseBrace) {
       if (peek_type(stack) == Num || peek_type(stack) == X) {
         push(polish_notation, stack->value, stack->priority, peek_type(stack));
       } else {
         while (1) {
-          if ((CheckSupport(tmp, stack->priority)) || peek_type(stack) == OpenBrace) {
-            push(&tmp, stack->value, stack->priority,
-                      peek_type(stack));
+          if ((more_priority(tmp, stack->priority)) || peek_type(stack) == OpenBrace) {
+            push(&tmp, stack->value, stack->priority, peek_type(stack));
             break;
           } else {
             push(polish_notation, tmp->value, tmp->priority, tmp->type);
@@ -52,9 +55,13 @@ void to_polish_notation(stack_t *stack, stack_t **polish_notation) {
     } else {
       while (tmp->type != OpenBrace) {
         push(polish_notation, tmp->value, tmp->priority, tmp->type);
+        if (!tmp->next && tmp->type != OpenBrace) {
+          error = ERR;
+          break;
+        }
         pop(&tmp);
       }
-      pop(&tmp);
+      pop(&tmp); 
     }
     stack = stack->next;
   }
@@ -63,6 +70,7 @@ void to_polish_notation(stack_t *stack, stack_t **polish_notation) {
     pop(&tmp);
   }
     *polish_notation = reverse(polish_notation);
+    return error;
 }
 
 /**
@@ -76,7 +84,7 @@ void to_polish_notation(stack_t *stack, stack_t **polish_notation) {
 */
 int expression_to_list(char *str, stack_t **stack) {
   int error = OK;
-
+  int brace = 0;
   int expression_len = strlen(str);
 
   if (str[0] == ')' || str[0] == '^' || str[0] == '*' || str[0] == '/' || str[0] == '.') {
@@ -115,8 +123,10 @@ int expression_to_list(char *str, stack_t **stack) {
           error = ERR;
         }
       } else if (*str == '(') {
+        brace++;
         push(stack, 0, 0, OpenBrace);
       } else if (*str == ')') {
+        brace--;
         push(stack, 0, 0, CloseBrace);
       } else if (*str == '*') {
         push(stack, 0, 2, Mult);
@@ -148,21 +158,42 @@ int expression_to_list(char *str, stack_t **stack) {
         error = ERR;
         break;
       }
+      if (brace < 0) {
+        error = ERR;
+        break;
+      }
     }
   }
-  print(*stack);
-
+  
+  if (brace != 0) error = ERR;
   if (error == OK) {
     *stack = reverse(stack);
   }
-    print(*stack);
   return error;
 }
 
-int peek_type(stack_t *list) { 
-  return list->type;
+/**
+ * @brief возвращает тип лексемы переданного элемента стэка
+ * 
+ * @param stack адрес верхнего элемента стэка
+ *
+ * @returns тип переданной лексемы преобрахованной к int
+*/
+int peek_type(stack_t *stack) { 
+  return stack->type;
 }
 
+/**
+ * @brief помещает элемент в стэк
+ *
+ * @param element адрес текущего верхнего элемента стека
+ * 
+ * @param value значение помещаемой лексемы, если не число, то 0
+ * 
+ * @param priority приоретет помещаемой лексемы
+ * 
+ * @param type тип помещаемой лексемы
+*/
 void push(stack_t **element, double value, int priority, type_t type) {
 
   stack_t *new_element = calloc(1, sizeof(stack_t));
@@ -176,6 +207,11 @@ void push(stack_t **element, double value, int priority, type_t type) {
   }
 }
 
+/**
+ * @brief удалает верхний элемент стэка и меняет адрес на нижележащий
+ *
+ * @param element адрес удаляемого верхнего элемента стека
+*/
 void pop(stack_t **top_element) {
   if (*top_element != NULL) {
     stack_t *tmp = (*top_element)->next;
@@ -184,6 +220,13 @@ void pop(stack_t **top_element) {
   }
 }
 
+/**
+ * @brief меняет стэк наоборот и самый нижний элемент становится верхним
+ * 
+ * @param stack адрес верхнего элемента стэка до разворота
+ *
+ * @returns адрес развернутого стэка
+*/
 stack_t *reverse(stack_t **stack) {
   stack_t *new_stack = NULL;
   while (*stack != NULL) {
@@ -193,27 +236,32 @@ stack_t *reverse(stack_t **stack) {
   return new_stack;
 }
 
-void print(stack_t *list) {
-  printf("- * - * -\n");
-  for (stack_t *p = list; p != NULL; p = p->next) {
-    printf("value - %f ", p->value);
-    printf("type - %d\n ", (int)p->type);
-  }
-  printf("- * - * -\n");
-}
-
-int CheckSupport(stack_t *help_stack, int priority) {
-  int num_stack = 0;
-  if (help_stack != NULL) {
-    if (priority > help_stack->priority) {
-      num_stack = 1;
+/**
+ * @brief сравнение приоритетов
+ * 
+ * @param stack стэк с которым сравниваем
+ * 
+ * @param priority значение приоритета другой лексемы
+ *
+ * @returns 1 - если приоритет priority выше, 0 - в противном случае
+*/
+int more_priority(stack_t *stack, int priority) {
+  int priority_right = 0;
+  if (stack != NULL) {
+    if (priority > stack->priority) {
+      priority_right = 1;
     }
   } else {
-    num_stack = 1;
+    priority_right = 1;
   }
-  return num_stack;
+  return priority_right;
 }
 
+/**
+ * @brief полностью удаляет и освобождает память от стэка
+ * 
+ * @param stack адрес верхнего элемента стэка
+*/
 void del_stack(stack_t **stack) {
   while (*stack != NULL) {
     stack_t *tmp = *stack;
@@ -222,10 +270,15 @@ void del_stack(stack_t **stack) {
   }
 }
 
-
-
-
-void Calc(stack_t **stack) {
+/**
+ * @brief вычисляет значение выражение в обратной польской нотации
+ * результат в итоге храниться 
+ * 
+ * @param stack адрес верхнего элемента стэка
+*/
+double calculation(stack_t **stack) {
+  print_stack(*stack);
+  double result = 0;
   while ((*stack)->next != NULL) {
     stack_t *tmp1 = {0}, *tmp2 = {0}, *tmp3 = {0};
     tmp1 = *stack;
@@ -239,18 +292,34 @@ void Calc(stack_t **stack) {
         tmp2 = tmp1->next;
         tmp3 = tmp2->next;
       }
-      if (peek_type(tmp3) >= 16 && peek_type(tmp3) <= 21) {
-        calculate_lexems(stack, tmp1, tmp2, tmp3);
+      if (peek_type(tmp3) >= 15 && peek_type(tmp3) <= 20) {
+        arithmetic_calc(stack, tmp1, tmp2, tmp3);
       } else {
-        calculate_functions(stack, tmp2, tmp3);
+        function_calc(stack, tmp2, tmp3);
       }
     } else {
-      calculate_functions2(stack, tmp1, tmp2);
+      function_calc(stack, tmp1, tmp2);
     }
   }
+  result = (*stack)->value;
+  del_stack(stack);
+  return result;
 }
 
-void calculate_lexems(stack_t **stack, stack_t *tmp1, stack_t *tmp2,
+/**
+ * @brief выполнение арифметической операции польской нотации
+ * 
+ * @param stack адрес верхнего элемента стэка
+ * 
+ * @param tmp1 лексема - число которое находится на два выше
+ * чем первая арифметическая операция
+ * 
+ * @param tmp2 лексема - число которое находится над 
+ * высшей арифметической операцией
+ * 
+ * @param tmp3 лексема - самая верхняя арифметическая операция
+*/
+void arithmetic_calc(stack_t **stack, stack_t *tmp1, stack_t *tmp2,
                       stack_t *tmp3) {
   double num_stack = 0;
   double a = tmp1->value;
@@ -271,11 +340,22 @@ void calculate_lexems(stack_t **stack, stack_t *tmp1, stack_t *tmp2,
   tmp1->priority = 0;
   tmp1->type = Num;
   tmp1->value = num_stack;
-  DelStack(stack, tmp3);
-  DelStack(stack, tmp2);
+
+  del_averege_element(stack, tmp3);
+  del_averege_element(stack, tmp2);
 }
 
-void calculate_functions(stack_t **stack, stack_t *tmp2, stack_t *tmp3) {
+/**
+ * @brief выполнение тригонометрические и унарные операции польской нотации
+ * 
+ * @param stack адрес верхнего элемента стэка
+ * 
+ * @param tmp2 лексема - число которое находится над 
+ * высшей тригонометрической лексемой или унарной
+ * 
+ * @param tmp3 лексема - самая верхняя тригонометрия или унарный
+*/
+void function_calc(stack_t **stack, stack_t *tmp2, stack_t *tmp3) {
   double a = 0;
   double num_stack = 0;
   a = tmp2->value;
@@ -305,44 +385,17 @@ void calculate_functions(stack_t **stack, stack_t *tmp2, stack_t *tmp3) {
   tmp2->priority = 0;
   tmp2->type = Num;
   tmp2->value = num_stack;
-  DelStack(stack, tmp3);
+  del_averege_element(stack, tmp3);
 }
 
-void calculate_functions2(stack_t **stack, stack_t *tmp1, stack_t *tmp2) {
-  double a = 0;
-  double num_stack = 0;
-  a = tmp1->value;
-  if (peek_type(tmp2) == UnPlus) {
-    num_stack = +a;
-  } else if (peek_type(tmp2) == UnMinus) {
-    num_stack = -a;
-  } else if (peek_type(tmp2) == Sin) {
-    num_stack = sin(a);
-  } else if (peek_type(tmp2) == Cos) {
-    num_stack = cos(a);
-  } else if (peek_type(tmp2) == Tan) {
-    num_stack = tan(a);
-  } else if (peek_type(tmp2) == Asin) {
-    num_stack = asin(a);
-  } else if (peek_type(tmp2) == Acos) {
-    num_stack = acos(a);
-  } else if (peek_type(tmp2) == Atan) {
-    num_stack = atan(a);
-  } else if (peek_type(tmp2) == Ln) {
-    num_stack = log(a);
-  } else if (peek_type(tmp2) == Log) {
-    num_stack = log10(a);
-  } else if (peek_type(tmp2) == Sqrt) {
-    num_stack = sqrt(a);
-  }
-  tmp1->priority = 0;
-  tmp1->type = Num;
-  tmp1->value = num_stack;
-  DelStack(stack, tmp2);
-}
-
-
-void DelStack(stack_t **result, stack_t *tmp) {
+/**
+ * @brief удаляет определенный элемент стека
+ * 
+ * @param result адрес верхнего элемента стэка
+ * 
+ * @param tmp элемент который необходимо удалить из стэка result
+*/
+void del_averege_element(stack_t **result, stack_t *tmp) {
   stack_t *tmp_in_function = {0};
   tmp_in_function = *result;
   if (*result == tmp) {
@@ -360,3 +413,34 @@ void DelStack(stack_t **result, stack_t *tmp) {
 
 
 
+void print_stack(stack_t *list) {
+  printf("- * - * -\n");
+  char ch = '0';
+  for (stack_t *p = list; p != NULL; p = p->next) {
+
+    if (p->type == OpenBrace) ch = '(';
+    else if (p->type == CloseBrace) ch = ')';
+    else if (p->type == Sin) ch = 's';
+    else if (p->type == Cos) ch = 'c';
+    else if (p->type == Tan) ch = 't';
+    else if (p->type == Asin) ch = 'S';
+    else if (p->type == Acos) ch = 'C';
+    else if (p->type == Atan) ch = 'T';
+    else if (p->type == Sqrt) ch = 'q';
+    else if (p->type == Ln) ch = 'l';
+    else if (p->type == Log) ch = 'L';
+    else if (p->type == UnMinus) ch = 'M';
+    else if (p->type == UnPlus) ch = 'P';
+    else if (p->type == Mod) ch = 'm';
+    else if (p->type == Pow) ch = '^';
+    else if (p->type == Plus) ch = '+';
+    else if (p->type == Minus) ch = '-';
+    else if (p->type == Mult) ch = '*';
+    else if (p->type == Div) ch = '/';
+    else if (p->type == Num) ch = ' ';
+
+    printf("value - %f %c\n", p->value, ch);
+
+  }
+  printf("- * - * -\n");
+}
