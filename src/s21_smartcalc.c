@@ -1,27 +1,28 @@
 
 #include "s21_smartcalc.h"
-#include <math.h>
 
-int main() {
-  char str[] = "10-(s(-4)+5)+(4-2.345)";
+int calc(char *str, double *result) {
+  // char str[] = "10-(sin(-4)+5)+(4-2.345)";
 
 
-  printf("str - %s", str);
+  // printf("str - %s\n", str);
   stack_t *stack = NULL;
-  int error = expression_to_list(str, &stack);
   
+  int error = check_formula(str);
+  if (error == OK) error = expression_to_list(str, &stack);
   if (error == OK) {
+
     stack_t *polish_notation = NULL;
     error = to_polish_notation(stack, &polish_notation);
     if(error == OK) {
       
-      double result = calculation(&polish_notation);
-      printf("result = %f\n", result);
+      *result = calculation(&polish_notation, &error);
+      // printf("result = %f\n", *result);
     }
     del_stack(&polish_notation);
   }
   del_stack(&stack);
-  return 0;
+  return error;
 }
 
 /**
@@ -132,28 +133,37 @@ int expression_to_list(char *str, stack_t **stack) {
         push(stack, 0, 2, Mult);
       } else if (*str == '/') {
         push(stack, 0, 2, Div);
-      } else if (*str == 'm') {
+      } else if (*str == '%') {
         push(stack, 0, 2, Mod);
       } else if (*str == '^') {
         push(stack, 0, 3, Pow);
-      } else if (*str == 's') { // sin
+      } else if (strncmp(str, "sin", 3) == 0) { // sin
         push(stack, 0, 4, Sin);
-      } else if (*str == 'S') { // asin
+        str += 2, i += 2;
+      } else if (strncmp(str, "asin", 4) == 0) { // asin
         push(stack, 0, 4, Asin);
-      } else if (*str == 'c') { // cos
+        str += 3, i += 3;
+      } else if (strncmp(str, "cos", 3) == 0) { // cos
         push(stack, 0, 4, Cos);
-      } else if (*str == 'C') { // acos
+        str += 2, i += 2;
+      } else if (strncmp(str, "acos", 4) == 0) { // acos
         push(stack, 0, 4, Acos);
-      } else if (*str == 't') { // tan
+        str += 3, i += 3;
+      } else if (strncmp(str, "tan", 3) == 0) { // tan
         push(stack, 0, 4, Tan);
-      } else if (*str == 'T') { // atan
+        str += 2, i += 2;
+      } else if (strncmp(str, "atan", 4) == 0) { // atan
         push(stack, 0, 4, Atan);
-      } else if (*str == 'q') { // sqrt
+        str += 3, i += 3;
+      } else if (strncmp(str, "sqrt", 4) == 0) { // sqrt
         push(stack, 0, 4, Sqrt);
-      } else if (*str == 'l') { // ln
+        str += 3, i += 3;
+      } else if (strncmp(str, "ln", 2) == 0) { // ln
         push(stack, 0, 4, Ln);
-      } else if (*str == 'L') { // log
+        str++, i ++;
+      } else if (strncmp(str, "log", 3) == 0) { // log
         push(stack, 0, 4, Log);
+        str += 2, i += 2;
       } else {
         error = ERR;
         break;
@@ -276,8 +286,8 @@ void del_stack(stack_t **stack) {
  * 
  * @param stack адрес верхнего элемента стэка
 */
-double calculation(stack_t **stack) {
-  print_stack(*stack);
+double calculation(stack_t **stack, int *error) {
+  // print_stack(*stack);
   double result = 0;
   while ((*stack)->next != NULL) {
     stack_t *tmp1 = {0}, *tmp2 = {0}, *tmp3 = {0};
@@ -293,7 +303,7 @@ double calculation(stack_t **stack) {
         tmp3 = tmp2->next;
       }
       if (peek_type(tmp3) >= 15 && peek_type(tmp3) <= 20) {
-        arithmetic_calc(stack, tmp1, tmp2, tmp3);
+        arithmetic_calc(stack, tmp1, tmp2, tmp3, error);
       } else {
         function_calc(stack, tmp2, tmp3);
       }
@@ -320,7 +330,7 @@ double calculation(stack_t **stack) {
  * @param tmp3 лексема - самая верхняя арифметическая операция
 */
 void arithmetic_calc(stack_t **stack, stack_t *tmp1, stack_t *tmp2,
-                      stack_t *tmp3) {
+                      stack_t *tmp3, int * error) {
   double num_stack = 0;
   double a = tmp1->value;
   double b = tmp2->value;
@@ -331,7 +341,11 @@ void arithmetic_calc(stack_t **stack, stack_t *tmp1, stack_t *tmp2,
   } else if (peek_type(tmp3) == Mult) {
     num_stack = a * b;
   } else if (peek_type(tmp3) == Div) {
-    num_stack = a / b;
+    if(b == 0.0) {
+      *error = ERR_DIV_ZERO;
+    } else {
+      num_stack = a / b;
+    }
   } else if (peek_type(tmp3) == Pow) {
     num_stack = pow(a, b);
   } else if (peek_type(tmp3) == Mod) {
@@ -411,36 +425,104 @@ void del_averege_element(stack_t **result, stack_t *tmp) {
   }
 }
 
-
-
-void print_stack(stack_t *list) {
-  printf("- * - * -\n");
-  char ch = '0';
-  for (stack_t *p = list; p != NULL; p = p->next) {
-
-    if (p->type == OpenBrace) ch = '(';
-    else if (p->type == CloseBrace) ch = ')';
-    else if (p->type == Sin) ch = 's';
-    else if (p->type == Cos) ch = 'c';
-    else if (p->type == Tan) ch = 't';
-    else if (p->type == Asin) ch = 'S';
-    else if (p->type == Acos) ch = 'C';
-    else if (p->type == Atan) ch = 'T';
-    else if (p->type == Sqrt) ch = 'q';
-    else if (p->type == Ln) ch = 'l';
-    else if (p->type == Log) ch = 'L';
-    else if (p->type == UnMinus) ch = 'M';
-    else if (p->type == UnPlus) ch = 'P';
-    else if (p->type == Mod) ch = 'm';
-    else if (p->type == Pow) ch = '^';
-    else if (p->type == Plus) ch = '+';
-    else if (p->type == Minus) ch = '-';
-    else if (p->type == Mult) ch = '*';
-    else if (p->type == Div) ch = '/';
-    else if (p->type == Num) ch = ' ';
-
-    printf("value - %f %c\n", p->value, ch);
-
+/**
+ * @brief проверяет формулу на корректность написания
+ * 
+ * @param str формула
+ * 
+ * @returns номер ошибки, OK или ERR 
+*/
+int check_formula(char *str) {
+  int error = OK;
+  int i = 0;
+  int point = 0;
+  int len = strlen(str);
+  if (len != 0) {
+    if (str[0] == '^' || str[0] == '.' || str[0] == '/' || str[0] == '*' ||
+        str[0] == ')' || str[i] == '%') {
+      error = ERR;
+    } else {
+      int bracket = 0;
+      while (str[i] != '\0') {
+        if ((str[i] == '*' || str[i] == '.' || str[i] == '^' ||
+             str[i] == '%' || str[i] == '/') &&
+            ((str[i + 1] >= 41 && str[i + 1] <= 47) || str[i + 1] == '^' ||
+             str[i + 1] == '%')) {
+          if ((str[i] != ')' && str[i - 1] != ')') ||
+              (str[i] != ')' && str[i + 1] != ')')) {
+            error = ERR;
+            break;
+          }
+        } else if (str[i] == '(' &&
+                   (str[i + 1] == ')' || str[i + 1] == '*' ||
+                    str[i + 1] == '%' || str[i + 1] == '^' ||
+                   str[i + 1] == '.' || str[i + 1] == '/')) {
+          error = ERR;
+          break;
+        } else if (str[i] == '*' || str[i] == '+' || str[i] == '/' ||
+                   str[i] == '-') {
+          point = 0;
+        } else if (str[i] == '.' && point == 0) {
+          point++;
+          if (point > 1) {
+            error = ERR;
+            break;
+          }
+        } else if (str[i] == '(') {
+          bracket++;
+        } else if (str[i] == ')') {
+          if (bracket > 0) {
+            bracket--;
+          } else {
+            break;
+          }
+        } else if (str[i] == '%' && ((str[i + 1] != '(') &&
+                  (str[i + 1] < '0' && str[i + 1] > '9'))) {
+          error = ERR;
+          break;
+        }
+        i++;
+        if (i == len && bracket == 0) {
+          if ((str[i - 1] >= '0' && str[i - 1] <= '9') ||
+              str[i - 1] == ')' || str[i - 1] == 'X') {
+            error = 0;
+          }
+        }
+      }
+    }
   }
-  printf("- * - * -\n");
+  return error;
 }
+
+
+// void print_stack(stack_t *list) {
+//   printf("- * - * -\n");
+//   char ch = '0';
+//   for (stack_t *p = list; p != NULL; p = p->next) {
+
+//     if (p->type == OpenBrace) ch = '(';
+//     else if (p->type == CloseBrace) ch = ')';
+//     else if (p->type == Sin) ch = 's';
+//     else if (p->type == Cos) ch = 'c';
+//     else if (p->type == Tan) ch = 't';
+//     else if (p->type == Asin) ch = 'S';
+//     else if (p->type == Acos) ch = 'C';
+//     else if (p->type == Atan) ch = 'T';
+//     else if (p->type == Sqrt) ch = 'q';
+//     else if (p->type == Ln) ch = 'l';
+//     else if (p->type == Log) ch = 'L';
+//     else if (p->type == UnMinus) ch = 'M';
+//     else if (p->type == UnPlus) ch = 'P';
+//     else if (p->type == Mod) ch = 'm';
+//     else if (p->type == Pow) ch = '^';
+//     else if (p->type == Plus) ch = '+';
+//     else if (p->type == Minus) ch = '-';
+//     else if (p->type == Mult) ch = '*';
+//     else if (p->type == Div) ch = '/';
+//     else if (p->type == Num) ch = ' ';
+
+//     printf("value - %f %c\n", p->value, ch);
+
+//   }
+//   printf("- * - * -\n");
+// }

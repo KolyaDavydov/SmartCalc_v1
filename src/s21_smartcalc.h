@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #define OK 0
 #define ERR 1
-
+#define ERR_DIV_ZERO 2
 
 typedef enum type_t {
   Num,
@@ -52,7 +52,10 @@ int more_priority(stack_t *stack, int priority);
 void del_stack(stack_t **stack);
 void del_averege_element(stack_t **result, stack_t *tmp);
 void function_calc(stack_t **stack, stack_t *tmp2, stack_t *tmp3);
-void arithmetic_calc(stack_t **stack, stack_t *tmp1, stack_t *tmp2, stack_t *tmp3);
-double calculation(stack_t **stack);
+void arithmetic_calc(stack_t **stack, stack_t *tmp1, stack_t *tmp2, stack_t *tmp3, int *error);
+double calculation(stack_t **stack, int *error);
+
+int calc(char *str, double *result);
+int check_formula(char *str);
 
 #endif

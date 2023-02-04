@@ -1,16 +1,39 @@
 CC=gcc
 CFLAGS=-std=c11 -Wall -Werror -Wextra
+PROFILE_FLAGS = -fprofile-arcs -ftest-coverage
+LIBSOURCES=s21_smartcalc.c
+LIBOBJECTS=$(LIBSOURCES:.c=.o)
+
 OS = $(shell uname)
 
 ifeq ($(OS), Linux)
-	CHECKFLAGS=-lcheck -lm -lpthread -lrt
+	CHECKFLAGS=-lcheck -lm -lpthread -lrt -lsubunit
 else
 	CHECKFLAGS=-lcheck -lm -lpthread
 endif
 
-run: clean
-	$(CC) $(CFLAGS) s21_smartcalc.c s21_smartcalc.h -lm -o  run
+all: gcov_report
+
+s21_smartcalc.a: $(LIBOBJECTS)
+	ar -crs s21_smartcalc.a $(LIBOBJECTS)
+	rm -f *.o
+
+tests: clean test.c s21_smartcalc.a
+	$(CC) $(CFLAGS) test.c $(LIBSOURCES) -o run $(CHECKFLAGS) -lgcov --coverage
 	./run
+
+# run: clean
+# 	$(CC) $(CFLAGS) s21_smartcalc.c s21_smartcalc.h -lm -o  run
+# 	./run
+
+gcov_report: tests
+	lcov -t "test" -o report.info -c -d .
+	genhtml -o report report.info
+	open ./report/index.html
+
+
+leaks: clean
+	valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=RESULT_VALGRIND.txt
 
 clean:
 	rm -rf *.o \
