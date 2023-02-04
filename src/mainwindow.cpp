@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QMessageBox>
+#include <QMessageBox> // для всплывающих окон
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -57,7 +57,7 @@ MainWindow::~MainWindow()
 }
 
 /**
- * @brief MainWindow::print_num печатает в окно (label) соответствующую цифру
+ * @brief print_num печатает в окно (label) соответствующую цифру
  */
 void MainWindow::print_num() {
     QPushButton *button = (QPushButton *)sender();
@@ -149,7 +149,6 @@ void MainWindow::print_equal() {
                 QMessageBox::critical(this, "WARNING", "вы ввели что то не так");
             }
         } else {
-//          actWindow->setText("error");
             QMessageBox::critical(this, "WARNING", "вы ввели что то не так");
         }
     }
