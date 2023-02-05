@@ -4,6 +4,8 @@ PROFILE_FLAGS = -fprofile-arcs -ftest-coverage
 LIBSOURCES=s21_smartcalc.c
 LIBOBJECTS=$(LIBSOURCES:.c=.o)
 
+TETEX += /usr/bin/texi2dvi
+
 OS = $(shell uname)
 
 ifeq ($(OS), Linux)
@@ -31,10 +33,21 @@ gcov_report: tests
 	genhtml -o report report.info
 	open ./report/index.html
 
-# build: clean
-# 	mkdir build
-# 	cd build;	qmake ../SmartCalcV1.pro
-# 	make -C build
+exbuild: clean
+	mkdir exbuild
+	cd exbuild;	qmake ../SmartCalcV1.pro CONFIG+=sdk_no_version_check
+	make -C exbuild
+
+exinstall: exbuild
+	-mkdir Smart_Calc_v1.0
+	tar xvf bin.tgz
+	make exdvi
+	cp -rf exbuild/SmartCalc bin/. s21_smartcalc.dvi Smart_Calc_v1.0/
+	-rm -rf exbuild bin s21_smartcalc.dvi
+
+exdvi: 
+	$(TETEX) s21_smartcalc.tex
+	rm -rf *.aux *log
 
 install:
 	mv Makefile cloneMake

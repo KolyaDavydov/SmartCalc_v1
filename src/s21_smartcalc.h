@@ -41,7 +41,7 @@ typedef struct stack_t{
   struct stack_t*next;
 } stack_t;
 
-int expression_to_list(char *str, stack_t **stack);
+int expression_to_list(char *str, stack_t **stack, double x_val);
 void push(stack_t **element, double value, int priority, type_t type);
 void print_stack(stack_t *list);
 stack_t *reverse(stack_t **stack);
@@ -55,7 +55,7 @@ void function_calc(stack_t **stack, stack_t *tmp2, stack_t *tmp3);
 void arithmetic_calc(stack_t **stack, stack_t *tmp1, stack_t *tmp2, stack_t *tmp3, int *error);
 double calculation(stack_t **stack, int *error);
 
-int calc(char *str, double *result);
+int calc(char *str, double *result, double x_val);
 int check_formula(char *str);
 
 #endif

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QMessageBox> // для всплывающих окон
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,8 +9,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->label->setText("O");
+    ui->lineEdit_x->setText("0");
     ui->label->setAlignment(Qt::AlignRight); // для вывода цифр с права
     this->actWindow = ui->label;
+
+    graph_window = new Graph();
+
     connect(ui->pushButton_0,SIGNAL(clicked()),this,SLOT(print_num()));
     connect(ui->pushButton_1,SIGNAL(clicked()),this,SLOT(print_num()));
     connect(ui->pushButton_2,SIGNAL(clicked()),this,SLOT(print_num()));
@@ -21,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButton_7,SIGNAL(clicked()),this,SLOT(print_num()));
     connect(ui->pushButton_8,SIGNAL(clicked()),this,SLOT(print_num()));
     connect(ui->pushButton_9,SIGNAL(clicked()),this,SLOT(print_num()));
+    connect(ui->pushButton_x,SIGNAL(clicked()),this,SLOT(print_num()));
 
     connect(ui->pushButton_sin,SIGNAL(clicked()),this,SLOT(print_funct()));
     connect(ui->pushButton_asin,SIGNAL(clicked()),this,SLOT(print_funct()));
@@ -49,6 +54,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButton_del,SIGNAL(clicked()),this,SLOT(print_del()));
 
     connect(ui->pushButton_equal,SIGNAL(clicked()),this,SLOT(print_equal()));
+
+    // для открытия нового виджета графика и передачи данных из окна калькулятора
+    connect(ui->pushButtonGraph, SIGNAL(clicked()), graph_window, SLOT(show()));
+    connect(ui->pushButtonGraph, SIGNAL(clicked()), this, SLOT(onButtonGraphSend()));
+    connect(this, SIGNAL(sendData(QString,QString,QString,QString,QString)),
+            graph_window, SLOT(recieveData(QString,QString,QString,QString,QString)));
+
+    ui->lineEdit_OpMin->setText(ui->lineEdit_OpMin->text() + "-5");
+    ui->lineEdit_OpMax->setText(ui->lineEdit_OpMax->text() + "5");
+    ui->lineEdit_ZnMin->setText(ui->lineEdit_ZnMin->text() + "-5");
+    ui->lineEdit_ZnMax->setText(ui->lineEdit_ZnMax->text() + "5");
 }
 
 MainWindow::~MainWindow()
@@ -69,7 +85,7 @@ void MainWindow::print_num() {
 }
 
 /**
- * @brief MainWindow::print_num печатает в окно (label) функцию и открывающую скобку после неё
+ * @brief print_funct печатает в окно (label) функцию и открывающую скобку после неё
  */
 void MainWindow::print_funct() {
     QPushButton *button = (QPushButton *)sender();
@@ -81,7 +97,7 @@ void MainWindow::print_funct() {
 }
 
 /**
- * @brief MainWindow::print_num печатает в окно (label) функцию и открывающую скобку после неё
+ * @brief print_oper печатает в окно (label) знак арифметической операции
  */
 void MainWindow::print_oper() {
     QPushButton *button = (QPushButton *)sender();
@@ -97,7 +113,7 @@ void MainWindow::print_oper() {
 }
 
 /**
- * @brief MainWindow::print_num печатает в окно (label) функцию и открывающую скобку после неё
+ * @brief print_num печатает в окно (label)  десятичную точку
  */
 void MainWindow::print_dot() {
     QPushButton *button = (QPushButton *)sender();
@@ -109,7 +125,7 @@ void MainWindow::print_dot() {
 }
 
 /**
- * @brief MainWindow::print_num печатает в окно (label) функцию и открывающую скобку после неё
+ * @brief print_AC обнуляет значение экрана калькулятора в символ "O"
  */
 void MainWindow::print_AC() {
 
@@ -117,7 +133,7 @@ void MainWindow::print_AC() {
 }
 
 /**
- * @brief MainWindow::print_num печатает в окно (label) функцию и открывающую скобку после неё
+ * @brief print_del удаляет последний символ из экрана калькулятора
  */
 void MainWindow::print_del() {
     QString text = this->actWindow->text();
@@ -128,28 +144,41 @@ void MainWindow::print_del() {
 }
 
 /**
- * @brief MainWindow::print_num печатает в окно (label) функцию и открывающую скобку после неё
+ * @brief print_equal запускает механизм вычесления с Сишными файлами и выводит результат на экран
  */
 void MainWindow::print_equal() {
+        if (this->actWindow->text() != "O") {
+            double result = 0;;
+            double x = 0;
+            QString result_Qtext = ui->label->text();
 
-    if (this->actWindow->text() != "O") {
-        setlocale(LC_NUMERIC, "C");
-        double result;
-        QString result_Qtext = ui->label->text();
-
-        QByteArray qba = result_Qtext.toLocal8Bit();
-        char *result_text = qba.data();
-        int error = check_formula((result_text));
-        if (error == 0) {
-            error = calc(result_text, &result);
+            QByteArray qba = result_Qtext.toLocal8Bit();
+            char *result_text = qba.data();
+            int error = check_formula((result_text));
             if (error == 0) {
-                QString str_tmp = QString::number(result);
-                actWindow->setText(str_tmp);
+                if (ui->lineEdit_x->text().isEmpty() != 1) {
+                    x = ui->lineEdit_x->text().toDouble();
+                }
+                error = calc(result_text, &result, x);
+                if (error == 0) {
+                    QString str_tmp = QString::number(result);
+                    actWindow->setText(str_tmp);
+                } else {
+                    QMessageBox::critical(this, "WARNING", "вы ввели что то не так");
+                }
             } else {
                 QMessageBox::critical(this, "WARNING", "вы ввели что то не так");
             }
-        } else {
-            QMessageBox::critical(this, "WARNING", "вы ввели что то не так");
         }
+}
+
+/**
+ * @brief onButtonGraphSend передает все необходимые данные в график
+ */
+void MainWindow::onButtonGraphSend() {
+    if (this->actWindow->text().length() == 0) {
+        this->actWindow->setText("0");
     }
+    emit sendData(ui->lineEdit_OpMin->text(), ui->lineEdit_OpMax->text(), ui->lineEdit_ZnMin->text(),
+                  ui->lineEdit_ZnMax->text(), this->actWindow->text());
 }

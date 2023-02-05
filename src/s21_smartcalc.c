@@ -1,15 +1,15 @@
 
 #include "s21_smartcalc.h"
 
-int calc(char *str, double *result) {
+int calc(char *str, double *result, double x_val) {
   // char str[] = "10-(sin(-4)+5)+(4-2.345)";
 
 
-  // printf("str - %s\n", str);
+  
   stack_t *stack = NULL;
   
   int error = check_formula(str);
-  if (error == OK) error = expression_to_list(str, &stack);
+  if (error == OK) error = expression_to_list(str, &stack, x_val);
   if (error == OK) {
 
     stack_t *polish_notation = NULL;
@@ -80,14 +80,16 @@ int to_polish_notation(stack_t *stack, stack_t **polish_notation) {
  * @param str выражение строка
  * 
  * @param stack адрес верхнего элемента стэка
+ * 
+ * @param x_val значение поля 'x' в калькуляторе
  *
  * @returns номер ошибки, OK или ERR
 */
-int expression_to_list(char *str, stack_t **stack) {
+int expression_to_list(char *str, stack_t **stack, double x_val) {
   int error = OK;
   int brace = 0;
   int expression_len = strlen(str);
-
+  
   if (str[0] == ')' || str[0] == '^' || str[0] == '*' || str[0] == '/' || str[0] == '.') {
     error = ERR;
   } else {
@@ -101,8 +103,9 @@ int expression_to_list(char *str, stack_t **stack) {
         str += num_char;
         i += num_char;
         push(stack, d, 0, Num);
-      } else if (*str == 'x') {
-        push(stack, 0, 0, X);
+      } else if (*str == 'X') {
+        // push(stack, 0, 0, X);
+        push(stack, x_val, 0, Num);
       } else if (*str == '+') {
         if (i == 0) {
           push(stack, 0, 1, UnPlus);
