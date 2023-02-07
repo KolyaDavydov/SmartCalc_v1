@@ -484,6 +484,16 @@ int check_formula(char *str) {
           error = ERR;
           break;
         }
+        if (str[i] == 'X' && i >= 0 && ((str[i + 1] >= '0' && str[i + 1] <= '9') || 
+                      str[i + 1] == '.' || str[i + 1] == 'X')) {
+          error = ERR;
+          break;
+        }
+        if (str[i] == 'X' && i >= 1 && ((str[i - 1] >= '0' && str[i - 1] <= '9') || 
+                      str[i - 1] == '.' || str[i - 1] == 'X')) {
+          error = ERR;
+          break;
+        }           
         i++;
         if (i == len && bracket == 0) {
           if ((str[i - 1] >= '0' && str[i - 1] <= '9') ||
@@ -491,6 +501,7 @@ int check_formula(char *str) {
             error = 0;
           }
         }
+     
       }
     }
   }
