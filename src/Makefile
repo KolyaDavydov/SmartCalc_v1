@@ -33,35 +33,40 @@ gcov_report: tests
 	genhtml -o report report.info
 	open ./report/index.html
 
-exbuild: clean
-	mkdir exbuild
-	cd exbuild;	qmake ../SmartCalcV1.pro CONFIG+=sdk_no_version_check
-	make -C exbuild
+install: clean
+	mkdir ../build
+	cd ../build; qmake ../src/SmartCalcV1.pro
+	make -C ../build
 
-exinstall: exbuild
-	-mkdir Smart_Calc_v1.0
-	tar xvf bin.tgz
-	make exdvi
-	cp -rf exbuild/SmartCalc bin/. s21_smartcalc.dvi Smart_Calc_v1.0/
-	-rm -rf exbuild bin s21_smartcalc.dvi
+# exbuild: clean
+# 	mkdir exbuild
+# 	cd exbuild;	qmake ../SmartCalcV1.pro
+# 	make -C exbuild
 
-exdvi: 
-	$(TETEX) s21_smartcalc.tex
-	rm -rf *.aux *log
+# exinstall: exbuild
+# 	-mkdir Smart_Calc_v1.0
+# 	tar xvf bin.tgz
+# 	make exdvi
+# 	cp -rf exbuild/SmartCalc bin/. s21_smartcalc.dvi Smart_Calc_v1.0/
+# 	-rm -rf exbuild bin s21_smartcalc.dvi
 
-install:
-	mv Makefile cloneMake
-	qmake
-	make
-	make clean
-	rm Makefile
-	mv cloneMake Makefile
-	mkdir ../app
-	mv SmartCalcV1 ../app/
-	# make clean
+# exdvi: 
+# 	$(TETEX) s21_smartcalc.tex
+# 	rm -rf *.aux *log
 
-uninstall:
-	rm -rf ../app
+# install:
+# 	mv Makefile cloneMake
+# 	qmake
+# 	make
+# 	make clean
+# 	rm Makefile
+# 	mv cloneMake Makefile
+# 	mkdir ../app
+# 	mv SmartCalcV1 ../app/
+# 	# make clean
+
+# uninstall:
+# 	rm -rf ../app
 
 dist:
 	mkdir ../build

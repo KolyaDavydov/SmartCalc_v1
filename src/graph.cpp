@@ -18,28 +18,30 @@ Graph::~Graph()
 void Graph::recieveData(QString str_xmin, QString str_xmax, QString str_ymin, QString str_ymax, QString str)
 {
     ui->widget->clearGraphs();
-    char *string = new char(str.length());
-    QByteArray barr = str.toLatin1();
-    strncpy(string, barr, str.length() + 1);
+//    char *string = new char(str.length());
+    QByteArray barr = str.toLocal8Bit();
+    char *stri = barr.data();
+//    strncpy(string, barr, str.length() + 1);
 
     double res = 0;
+    double X;
     int status = 0;
     // берем краевые значения графика из калькулятора
     x_begin = str_xmin.toDouble();
     x_end = str_xmax.toDouble();
     y_begin = str_ymin.toDouble();
     y_end = str_ymax.toDouble();
-    if (x_begin < -1000) {
-        x_begin = -1000;
+    if (x_begin < -1000000) {
+        x_begin = -1000000;
     }
-    if (y_begin < -1000) {
-        y_begin = -1000;
+    if (y_begin < -1000000) {
+        y_begin = -1000000;
     }
-    if (x_end > 1000) {
-        x_end = 1000;
+    if (x_end > 1000000) {
+        x_end = 1000000;
     }
-    if (y_end > 1000) {
-        y_end = 1000;
+    if (y_end > 1000000) {
+        y_end = 1000000;
     }
     h = 0.01; // шаг точек
     // настройка видимой областисистемы координат
@@ -47,7 +49,7 @@ void Graph::recieveData(QString str_xmin, QString str_xmax, QString str_ymin, QS
     ui->widget->yAxis->setRange(y_begin, y_end);
 
     for (X = x_begin;  X <= x_end && !status; X +=h) {
-        status = calc(string, &res, X);
+        status = calc(stri, &res, X);
         x.push_back(X); // в вектор Х записать Х
         y.push_back(res); // в вектор Y записать результат функции при данном Х
     }
@@ -57,5 +59,5 @@ void Graph::recieveData(QString str_xmin, QString str_xmax, QString str_ymin, QS
     ui->widget->replot(); // рисует график
     x.clear();
     y.clear();
-    delete(string);
+//    delete(string);
 }
