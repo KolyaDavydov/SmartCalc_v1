@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     graph_window = new Graph();
+    credit_window = new Credit();
 
     ui->setupUi(this);
     ui->label->setText("0"); // начальное значение в строке вывода колькулятора
@@ -58,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButton_Graphics, SIGNAL(clicked()), graph_window, SLOT(show()));
     connect(ui->pushButton_Graphics, SIGNAL(clicked()), this, SLOT(print_graph()));
 
+    connect(ui->pushButton_Credit, SIGNAL(clicked()), credit_window, SLOT(show()));
 //    // для открытия нового виджета графика и передачи данных из окна калькулятора
 //    connect(ui->pushButtonGraph, SIGNAL(clicked()), graph_window, SLOT(show()));
 //    connect(ui->pushButtonGraph, SIGNAL(clicked()), this, SLOT(onButtonGraphSend()));

@@ -5,6 +5,7 @@
 
 #include <QMessageBox> // для всплывающих окон
 #include "graph.h"
+#include "credit.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -25,6 +26,7 @@ public:
 private:
     Ui::MainWindow *ui;
     Graph *graph_window;
+    Credit *credit_window;
 
 
 // хедеры для наших функций
