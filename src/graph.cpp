@@ -1,13 +1,13 @@
 #include "graph.h"
 #include "ui_graph.h"
 
-#include "mainwindow.h"
-
 Graph::Graph(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Graph)
 {
     ui->setupUi(this);
+    connect(ui->pushButton_draw_graph, SIGNAL(clicked()), this, SLOT(push_draw()));
+
 }
 
 Graph::~Graph()
@@ -15,49 +15,77 @@ Graph::~Graph()
     delete ui;
 }
 
-void Graph::recieveData(QString str_xmin, QString str_xmax, QString str_ymin, QString str_ymax, QString str)
-{
-    ui->widget->clearGraphs();
-//    char *string = new char(str.length());
-    QByteArray barr = str.toLocal8Bit();
-    char *stri = barr.data();
-//    strncpy(string, barr, str.length() + 1);
+void Graph::push_draw() {
+    QString function = ui->label_function->text();
+    function.replace(".", ",");
+    QByteArray qba = function.toLocal8Bit();
+    char *function_on_c = qba.data();
 
-    double res = 0;
+    double result = 0.0;
+    int error = calc(function_on_c, &result, 0);
+    if(error == 0) {
+        print_graph(function);
+    } else {
+        QMessageBox::critical(this, "WARNING", "проверте формулу");
+    }
+
+}
+void Graph::print_graph(QString function) {
+    ui->label_function->setText(function);
+
+    ui->custom_plot->clearGraphs();
+//    function.replace(".", ",");
+//    QByteArray qba = function.toLocal8Bit();
+//    char *function_on_c = qba.data();
+
+
+
+//    char *str = new char(function.length());
+//    QByteArray qba = function.toLatin1();
+//    strncpy(str, qba, function.length() + 1);
+
+//        double x_begin = ui->spinBox_min_x->value();
+//        double x_end = ui->spinBox_max_x->value();
+//        double y_begin = ui->spinBox_min_y->value();
+//        double y_end = ui->spinBox_max_y->value();
+
+//        double h = 1.01;
+//        double X;
+//        double res = 0.0;
+//        QVector<double> x, y;
+
+//            ui->custom_plot->xAxis->setRange(x_begin, x_end);
+//            ui->custom_plot->yAxis->setRange(y_begin, y_end);
+    function.replace(".", ",");
+    QByteArray qba = function.toLocal8Bit();
+    char *function_on_c = qba.data();
+
+    // задаем границы для графика
+    double x_begin = ui->spinBox_min_x->value();
+    double x_end = ui->spinBox_max_x->value();
+    double y_begin = ui->spinBox_min_y->value();
+    double y_end = ui->spinBox_max_y->value();
+
+    double h = 0.01;
     double X;
-    int status = 0;
-    // берем краевые значения графика из калькулятора
-    x_begin = str_xmin.toDouble();
-    x_end = str_xmax.toDouble();
-    y_begin = str_ymin.toDouble();
-    y_end = str_ymax.toDouble();
-    if (x_begin < -1000000) {
-        x_begin = -1000000;
-    }
-    if (y_begin < -1000000) {
-        y_begin = -1000000;
-    }
-    if (x_end > 1000000) {
-        x_end = 1000000;
-    }
-    if (y_end > 1000000) {
-        y_end = 1000000;
-    }
-    h = 0.01; // шаг точек
-    // настройка видимой областисистемы координат
-    ui->widget->xAxis->setRange(x_begin, x_end);
-    ui->widget->yAxis->setRange(y_begin, y_end);
+    double res = 0.0;
+    QVector<double> x, y;
 
-    for (X = x_begin;  X <= x_end && !status; X +=h) {
-        status = calc(stri, &res, X);
-        x.push_back(X); // в вектор Х записать Х
-        y.push_back(res); // в вектор Y записать результат функции при данном Х
+    // устанавливаем границы для графика
+    ui->custom_plot->xAxis->setRange(x_begin, x_end);
+    ui->custom_plot->yAxis->setRange(y_begin, y_end);
+
+    int error = 0;
+    for (X = x_begin; X < x_end && !error; X += h) {
+        x.push_back(X);
+        error = calc(function_on_c, &res, X);
+        y.push_back(res);
     }
-    ui->widget->addGraph(); // добавляем график на виджет
-    // обращаемся к графику и устанавливаем ему значения и передаем векторы Х и Y
-    ui->widget->graph(0)->addData(x,y);
-    ui->widget->replot(); // рисует график
+    ui->custom_plot->addGraph();
+    ui->custom_plot->graph(0)->addData(x,y);
+    ui->custom_plot->replot();
     x.clear();
     y.clear();
-//    delete(string);
+
+
 }

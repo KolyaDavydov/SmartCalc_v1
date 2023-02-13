@@ -6,20 +6,195 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>777</width>
-    <height>536</height>
+    <width>508</width>
+    <height>539</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QCustomPlot" name="widget" native="true">
+  <widget class="QCustomPlot" name="custom_plot" native="true">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>40</y>
-     <width>751</width>
-     <height>481</height>
+     <width>491</width>
+     <height>391</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_draw_graph">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>460</y>
+     <width>131</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+  background-color: rgb(255, 151, 57);
+  color: white; 
+	border: 1px solid gray;
+border-radius: 5px;
+}
+QPushButton:pressed {
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa);
+}</string>
+   </property>
+   <property name="text">
+    <string>показать график</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>450</y>
+     <width>51</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>min_X</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>500</y>
+     <width>41</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>min_Y</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>500</y>
+     <width>51</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>max_Y</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>450</y>
+     <width>51</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>max_X</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBox_min_x">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>440</y>
+     <width>111</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>-1000000</number>
+   </property>
+   <property name="maximum">
+    <number>1000000</number>
+   </property>
+   <property name="value">
+    <number>-10</number>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBox_min_y">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>490</y>
+     <width>111</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>-1000000</number>
+   </property>
+   <property name="maximum">
+    <number>1000000</number>
+   </property>
+   <property name="value">
+    <number>-10</number>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBox_max_x">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>440</y>
+     <width>131</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>-1000000</number>
+   </property>
+   <property name="maximum">
+    <number>1000000</number>
+   </property>
+   <property name="value">
+    <number>10</number>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBox_max_y">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>490</y>
+     <width>131</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>-1000000</number>
+   </property>
+   <property name="maximum">
+    <number>1000000</number>
+   </property>
+   <property name="value">
+    <number>10</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_fnction">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>67</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>функция:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="label_function">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>10</y>
+     <width>301</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>

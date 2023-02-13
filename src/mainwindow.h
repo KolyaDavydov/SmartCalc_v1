@@ -2,9 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QLabel>
-#include "graph.h"
+
 #include <QMessageBox> // для всплывающих окон
+#include "graph.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -24,8 +24,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QLabel *actWindow;
     Graph *graph_window;
+
 
 // хедеры для наших функций
 private slots:
@@ -37,9 +37,7 @@ private slots:
     void print_AC();
     void print_del();
     void print_equal();
-    void onButtonGraphSend();
+    void print_graph();
 
-signals:
-    void sendData(QString str_xmin, QString str_xmax, QString str_ymin, QString str_ymax, QString str);
 };
 #endif // MAINWINDOW_H

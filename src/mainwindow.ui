@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>385</width>
-    <height>530</height>
+    <width>364</width>
+    <height>392</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,8 +28,8 @@
     </property>
     <property name="font">
      <font>
-      <family>Ubuntu</family>
-      <pointsize>13</pointsize>
+      <family>Mukti</family>
+      <pointsize>11</pointsize>
       <weight>9</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -37,9 +37,8 @@
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-	font: 75 13pt &quot;C059&quot;;
-	font: 75 12pt &quot;Vemana2000&quot;;
-	font: 75 13pt &quot;Ubuntu&quot;;
+  background-color: rgb(222, 221, 218);
+  color: black; 
 	border: 1px solid gray;
 border-radius: 5px;
 }
@@ -62,8 +61,8 @@ QPushButton:pressed {
     </property>
     <property name="font">
      <font>
-      <family>Ubuntu</family>
-      <pointsize>13</pointsize>
+      <family>Mukti</family>
+      <pointsize>11</pointsize>
       <weight>9</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -71,9 +70,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-	font: 75 13pt &quot;C059&quot;;
-	font: 75 12pt &quot;Vemana2000&quot;;
-	font: 75 13pt &quot;Ubuntu&quot;;
+  background-color: rgb(222, 221, 218);
+  color: black; 
 	border: 1px solid gray;
 border-radius: 5px;
 }
@@ -96,8 +94,8 @@ QPushButton:pressed {
     </property>
     <property name="font">
      <font>
-      <family>Ubuntu</family>
-      <pointsize>13</pointsize>
+      <family>Mukti</family>
+      <pointsize>11</pointsize>
       <weight>9</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -105,9 +103,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-	font: 75 13pt &quot;C059&quot;;
-	font: 75 12pt &quot;Vemana2000&quot;;
-	font: 75 13pt &quot;Ubuntu&quot;;
+  background-color: rgb(222, 221, 218);
+  color: black; 
 	border: 1px solid gray;
 border-radius: 5px;
 }
@@ -130,8 +127,8 @@ QPushButton:pressed {
     </property>
     <property name="font">
      <font>
-      <family>Ubuntu</family>
-      <pointsize>13</pointsize>
+      <family>Mukti</family>
+      <pointsize>11</pointsize>
       <weight>9</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -139,9 +136,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-	font: 75 13pt &quot;C059&quot;;
-	font: 75 12pt &quot;Vemana2000&quot;;
-	font: 75 13pt &quot;Ubuntu&quot;;
+  background-color: rgb(222, 221, 218);
+  color: black; 
 	border: 1px solid gray;
 border-radius: 5px;
 }
@@ -164,8 +160,8 @@ QPushButton:pressed {
     </property>
     <property name="font">
      <font>
-      <family>Ubuntu</family>
-      <pointsize>13</pointsize>
+      <family>Mukti</family>
+      <pointsize>11</pointsize>
       <weight>9</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -173,9 +169,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-	font: 75 13pt &quot;C059&quot;;
-	font: 75 12pt &quot;Vemana2000&quot;;
-	font: 75 13pt &quot;Ubuntu&quot;;
+  background-color: rgb(222, 221, 218);
+  color: black; 
 	border: 1px solid gray;
 border-radius: 5px;
 }
@@ -198,8 +193,8 @@ QPushButton:pressed {
     </property>
     <property name="font">
      <font>
-      <family>Ubuntu</family>
-      <pointsize>13</pointsize>
+      <family>Mukti</family>
+      <pointsize>11</pointsize>
       <weight>9</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -207,9 +202,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-	font: 75 13pt &quot;C059&quot;;
-	font: 75 12pt &quot;Vemana2000&quot;;
-	font: 75 13pt &quot;Ubuntu&quot;;
+  background-color: rgb(222, 221, 218);
+  color: black; 
 	border: 1px solid gray;
 border-radius: 5px;
 }
@@ -232,8 +226,8 @@ QPushButton:pressed {
     </property>
     <property name="font">
      <font>
-      <family>Ubuntu</family>
-      <pointsize>13</pointsize>
+      <family>Mukti</family>
+      <pointsize>11</pointsize>
       <weight>9</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -241,9 +235,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-	font: 75 13pt &quot;C059&quot;;
-	font: 75 12pt &quot;Vemana2000&quot;;
-	font: 75 13pt &quot;Ubuntu&quot;;
+  background-color: rgb(222, 221, 218);
+  color: black; 
 	border: 1px solid gray;
 border-radius: 5px;
 }
@@ -266,8 +259,8 @@ QPushButton:pressed {
     </property>
     <property name="font">
      <font>
-      <family>Ubuntu</family>
-      <pointsize>13</pointsize>
+      <family>Mukti</family>
+      <pointsize>11</pointsize>
       <weight>9</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -275,9 +268,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-	font: 75 13pt &quot;C059&quot;;
-	font: 75 12pt &quot;Vemana2000&quot;;
-	font: 75 13pt &quot;Ubuntu&quot;;
+  background-color: rgb(222, 221, 218);
+  color: black; 
 	border: 1px solid gray;
 border-radius: 5px;
 }
@@ -300,8 +292,8 @@ QPushButton:pressed {
     </property>
     <property name="font">
      <font>
-      <family>Ubuntu</family>
-      <pointsize>13</pointsize>
+      <family>Mukti</family>
+      <pointsize>11</pointsize>
       <weight>9</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -309,9 +301,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-	font: 75 13pt &quot;C059&quot;;
-	font: 75 12pt &quot;Vemana2000&quot;;
-	font: 75 13pt &quot;Ubuntu&quot;;
+  background-color: rgb(222, 221, 218);
+  color: black; 
 	border: 1px solid gray;
 border-radius: 5px;
 }
@@ -334,7 +325,7 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-	background-color: rgb(255, 120, 0);
+	background-color: rgb(246, 97, 81);
   color: white; 
   border: 1px solid gray;
 border-radius: 5px;
@@ -366,8 +357,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-  background-color: rgb(255, 151, 57);
-  color: white; 
+  background-color: rgb(246, 245, 244);
+  color: black; 
   border: 1px solid gray;
 border-radius: 5px;
 }
@@ -392,8 +383,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-  background-color: rgb(255, 151, 57);
-  color: white; 
+  background-color: rgb(246, 245, 244);
+  color: black; 
   border: 1px solid gray;
 border-radius: 5px;
 }
@@ -418,8 +409,8 @@ QPushButton:pressed {
     </property>
     <property name="font">
      <font>
-      <family>Ubuntu</family>
-      <pointsize>13</pointsize>
+      <family>Mukti</family>
+      <pointsize>11</pointsize>
       <weight>9</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -427,9 +418,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-	font: 75 13pt &quot;C059&quot;;
-	font: 75 12pt &quot;Vemana2000&quot;;
-	font: 75 13pt &quot;Ubuntu&quot;;
+  background-color: rgb(222, 221, 218);
+  color: black; 
 	border: 1px solid gray;
 border-radius: 5px;
 }
@@ -452,6 +442,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
+  background-color: rgb(246, 245, 244);
+  color: black; 
 	border: 1px solid gray;
 border-radius: 5px;
 }
@@ -474,6 +466,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
+  background-color: rgb(246, 245, 244);
+  color: black; 
 	border: 1px solid gray;
 border-radius: 5px;
 }
@@ -496,8 +490,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-  background-color: rgb(255, 151, 57);
-  color: white; 
+  background-color: rgb(246, 245, 244);
+  color: black; 
   border: 1px solid gray;
 border-radius: 5px;
 }
@@ -522,6 +516,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
+  background-color: rgb(246, 245, 244);
+  color: black; 
 	border: 1px solid gray;
 border-radius: 5px;
 }
@@ -544,6 +540,8 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
+  background-color: rgb(246, 245, 244);
+  color: black; 
 	border: 1px solid gray;
 border-radius: 5px;
 }
@@ -871,6 +869,8 @@ background-color: white;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
+  background-color: rgb(246, 245, 244);
+  color: black; 
 	border: 1px solid gray;
 border-radius: 5px;
 }
@@ -893,7 +893,7 @@ QPushButton:pressed {
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-	background-color: rgb(255, 120, 0);
+	background-color: rgb(246, 97, 81);
   color: white; 
   border: 1px solid gray;
 border-radius: 5px;
@@ -905,7 +905,7 @@ QPushButton:pressed {
 }</string>
     </property>
     <property name="text">
-     <string>&lt;-</string>
+     <string>del</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_x">
@@ -938,16 +938,16 @@ QPushButton:pressed {
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>260</y>
+      <y>265</y>
       <width>101</width>
       <height>37</height>
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButtonGraph">
+   <widget class="QPushButton" name="pushButton_Graphics">
     <property name="geometry">
      <rect>
-      <x>210</x>
+      <x>220</x>
       <y>330</y>
       <width>131</width>
       <height>51</height>
@@ -968,30 +968,28 @@ QPushButton:pressed {
       <bold>false</bold>
      </font>
     </property>
-    <property name="text">
-     <string>Graph</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>350</y>
-      <width>41</width>
-      <height>28</height>
-     </rect>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+  background-color: rgb(222, 221, 218);
+  color: black; 
+	border: 1px solid gray;
+border-radius: 5px;
+}
+QPushButton:pressed {
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa);
+}</string>
     </property>
     <property name="text">
-     <string>Y от</string>
+     <string>График</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_ZnMax">
+   <widget class="QPushButton" name="pushButton_Credit">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>350</y>
-      <width>51</width>
-      <height>28</height>
+      <x>10</x>
+      <y>330</y>
+      <width>201</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -1000,92 +998,28 @@ QPushButton:pressed {
       <verstretch>0</verstretch>
      </sizepolicy>
     </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_OpMax">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>320</y>
-      <width>51</width>
-      <height>28</height>
-     </rect>
+    <property name="font">
+     <font>
+      <family>Mukti</family>
+      <pointsize>11</pointsize>
+      <weight>9</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+     </font>
     </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>320</y>
-      <width>41</width>
-      <height>28</height>
-     </rect>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+  background-color: rgb(222, 221, 218);
+  color: black; 
+	border: 1px solid gray;
+border-radius: 5px;
+}
+QPushButton:pressed {
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa);
+}</string>
     </property>
     <property name="text">
-     <string>X от</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_ZnMin">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>360</y>
-      <width>51</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_OpMin">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>320</y>
-      <width>51</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>350</y>
-      <width>41</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Y от</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>320</y>
-      <width>41</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>X от</string>
+     <string>Кредитный калькулятор</string>
     </property>
    </widget>
   </widget>

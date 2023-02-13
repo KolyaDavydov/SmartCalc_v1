@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QDebug>
 
 
 
@@ -7,13 +8,12 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-    ui->label->setText("O");
-    ui->lineEdit_x->setText("0");
-    ui->label->setAlignment(Qt::AlignRight); // для вывода цифр с права
-    this->actWindow = ui->label;
 
     graph_window = new Graph();
+
+    ui->setupUi(this);
+    ui->label->setText("0"); // начальное значение в строке вывода колькулятора
+    ui->label->setAlignment(Qt::AlignRight); // для вывода цифр с права
 
     connect(ui->pushButton_0,SIGNAL(clicked()),this,SLOT(print_num()));
     connect(ui->pushButton_1,SIGNAL(clicked()),this,SLOT(print_num()));
@@ -55,16 +55,19 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->pushButton_equal,SIGNAL(clicked()),this,SLOT(print_equal()));
 
-    // для открытия нового виджета графика и передачи данных из окна калькулятора
-    connect(ui->pushButtonGraph, SIGNAL(clicked()), graph_window, SLOT(show()));
-    connect(ui->pushButtonGraph, SIGNAL(clicked()), this, SLOT(onButtonGraphSend()));
-    connect(this, SIGNAL(sendData(QString,QString,QString,QString,QString)),
-            graph_window, SLOT(recieveData(QString,QString,QString,QString,QString)));
+    connect(ui->pushButton_Graphics, SIGNAL(clicked()), graph_window, SLOT(show()));
+    connect(ui->pushButton_Graphics, SIGNAL(clicked()), this, SLOT(print_graph()));
 
-    ui->lineEdit_OpMin->setText(ui->lineEdit_OpMin->text() + "-5");
-    ui->lineEdit_OpMax->setText(ui->lineEdit_OpMax->text() + "5");
-    ui->lineEdit_ZnMin->setText(ui->lineEdit_ZnMin->text() + "-5");
-    ui->lineEdit_ZnMax->setText(ui->lineEdit_ZnMax->text() + "5");
+//    // для открытия нового виджета графика и передачи данных из окна калькулятора
+//    connect(ui->pushButtonGraph, SIGNAL(clicked()), graph_window, SLOT(show()));
+//    connect(ui->pushButtonGraph, SIGNAL(clicked()), this, SLOT(onButtonGraphSend()));
+//    connect(this, SIGNAL(sendData(QString,QString,QString,QString,QString)),
+//            graph_window, SLOT(recieveData(QString,QString,QString,QString,QString)));
+
+//    ui->lineEdit_OpMin->setText(ui->lineEdit_OpMin->text() + "-5");
+//    ui->lineEdit_OpMax->setText(ui->lineEdit_OpMax->text() + "5");
+//    ui->lineEdit_ZnMin->setText(ui->lineEdit_ZnMin->text() + "-5");
+//    ui->lineEdit_ZnMax->setText(ui->lineEdit_ZnMax->text() + "5");
 }
 
 MainWindow::~MainWindow()
@@ -77,10 +80,10 @@ MainWindow::~MainWindow()
  */
 void MainWindow::print_num() {
     QPushButton *button = (QPushButton *)sender();
-    if (this->actWindow->text() == "O") {
-        this->actWindow->setText(button->text());
+    if (ui->label->text().endsWith("0") && ui->label->text().size() == 1) {
+        ui->label->setText(button->text());
     } else {
-        actWindow->setText(actWindow->text().append(button->text()));
+        ui->label->setText(ui->label->text().append(button->text()));
     }
 }
 
@@ -89,10 +92,10 @@ void MainWindow::print_num() {
  */
 void MainWindow::print_funct() {
     QPushButton *button = (QPushButton *)sender();
-    if (this->actWindow->text() == "O") {
-        this->actWindow->setText(button->text() + "(");
+    if (ui->label->text().endsWith("0") && ui->label->text().size() == 1) {
+        ui->label->setText(button->text() + "(");
     } else {
-        actWindow->setText(actWindow->text().append(button->text() + "("));
+        ui->label->setText(ui->label->text().append(button->text() + "("));
     }
 }
 
@@ -101,13 +104,13 @@ void MainWindow::print_funct() {
  */
 void MainWindow::print_oper() {
     QPushButton *button = (QPushButton *)sender();
-    if (this->actWindow->text() != "O") {
+    if (ui->label->text() != "0") {
         if(button->text() == "pow") {
-            this->actWindow->setText(actWindow->text().append("^"));
+            ui->label->setText(ui->label->text().append("^"));
         } else if (button->text() == "mod") {
-            this->actWindow->setText(actWindow->text().append("%"));
+            ui->label->setText(ui->label->text().append("%"));
         } else {
-            this->actWindow->setText(actWindow->text().append(button->text()));
+            ui->label->setText(ui->label->text().append(button->text()));
         }
     }
 }
@@ -117,29 +120,30 @@ void MainWindow::print_oper() {
  */
 void MainWindow::print_dot() {
     QPushButton *button = (QPushButton *)sender();
-    if (this->actWindow->text() == "O") {
-        this->actWindow->setText("0" + button->text());
+    if (ui->label->text() == "0") {
+        ui->label->setText("0" + button->text());
     } else {
-        this->actWindow->setText(actWindow->text().append(button->text()));
+        ui->label->setText(ui->label->text().append(button->text()));
     }
 }
 
 /**
- * @brief print_AC обнуляет значение экрана калькулятора в символ "O"
+ * @brief print_AC обнуляет значение экрана калькулятора в символ "0"
  */
 void MainWindow::print_AC() {
 
-    this->actWindow->setText("O");
+    ui->label->setText("0");
+    ui->lineEdit_x->setText("");
 }
 
 /**
  * @brief print_del удаляет последний символ из экрана калькулятора
  */
 void MainWindow::print_del() {
-    QString text = this->actWindow->text();
+    QString text = ui->label->text();
     text.chop(1);
-    actWindow->setText(text);
-    if(text == "") this->actWindow->setText("O");
+    ui->label->setText(text);
+    if(text == "") ui->label->setText("0");
 
 }
 
@@ -147,38 +151,71 @@ void MainWindow::print_del() {
  * @brief print_equal запускает механизм вычесления с Сишными файлами и выводит результат на экран
  */
 void MainWindow::print_equal() {
-        if (this->actWindow->text() != "O") {
-            double result = 0;;
-            double x = 0;
-            QString result_Qtext = ui->label->text();
+    if (ui->label->text() != "0") {
+            double result = 0.0;
+            double x = 0.0;
+            if (ui->lineEdit_x->text().isEmpty() != 1) {
+                x = ui->lineEdit_x->text().toDouble();
+            }
+            // переводим из QString в string
 
+            QString result_Qtext = ui->label->text();
+            // почему то с ублюдской точкой не работает поэтому
+            result_Qtext.replace(".", ",");
+            qDebug() << result_Qtext;
             QByteArray qba = result_Qtext.toLocal8Bit();
             char *result_text = qba.data();
-            int error = check_formula((result_text));
+
+            int error = 0;
+            error = calc(result_text, &result, x);
+
             if (error == 0) {
-                if (ui->lineEdit_x->text().isEmpty() != 1) {
-                    x = ui->lineEdit_x->text().toDouble();
-                }
-                error = calc(result_text, &result, x);
-                if (error == 0) {
                     QString str_tmp = QString::number(result);
-                    actWindow->setText(str_tmp);
-                } else {
-                    QMessageBox::critical(this, "WARNING", "вы ввели что то не так");
-                }
+                    ui->label->setText(str_tmp);
+            } else if (error == 2){
+                QMessageBox::critical(this, "WARNING", "деление на ноль");
             } else {
-                QMessageBox::critical(this, "WARNING", "вы ввели что то не так");
+                QMessageBox::critical(this, "WARNING", "проверьте выражение на корректность");
             }
         }
 }
 
+
+
 /**
- * @brief onButtonGraphSend передает все необходимые данные в график
+ * @brief передает значение формулы в график (если формула правильная и есть Х)
  */
-void MainWindow::onButtonGraphSend() {
-    if (this->actWindow->text().length() == 0) {
-        this->actWindow->setText("0");
+void MainWindow::print_graph() {
+    if (ui->label->text() != "0" && ui->label->text().contains('X')) {
+        double result = 0;
+        double x = 0;
+        QString result_Qtext = ui->label->text();
+        // почему то с ублюдской точкой не работает поэтому
+        result_Qtext.replace(".", ",");
+
+        QByteArray qba = result_Qtext.toLocal8Bit();
+        char *result_text = qba.data();
+        int error = check_formula((result_text));
+        if (error == 0) {
+            if (ui->lineEdit_x->text().isEmpty() != 1) {
+                x = ui->lineEdit_x->text().toDouble();
+            }
+            error = calc(result_text, &result, x);
+            if (error == 0) {
+                QString str_tmp = QString::number(result);
+                graph_window->print_graph(ui->label->text());
+            } else {
+                QMessageBox::critical(this, "WARNING", "вы ввели что то не так");
+            }
+        } else {
+            QMessageBox::critical(this, "WARNING", "вы ввели что то не так");
+        }
+    } else {
+        QMessageBox::critical(this, "WARNING", "проверте формулу");
     }
-    emit sendData(ui->lineEdit_OpMin->text(), ui->lineEdit_OpMax->text(), ui->lineEdit_ZnMin->text(),
-                  ui->lineEdit_ZnMax->text(), this->actWindow->text());
+
+
 }
+
+
+

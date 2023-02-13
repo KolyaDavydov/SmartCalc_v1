@@ -2,22 +2,22 @@
 #include "s21_smartcalc.h"
 
 int calc(char *str, double *result, double x_val) {
-  // char str[] = "10-(sin(-4)+5)+(4-2.345)";
 
-
-  
   stack_t *stack = NULL;
   
   int error = check_formula(str);
+
   if (error == OK) error = expression_to_list(str, &stack, x_val);
+      //  printf("result = %d\n", error);
   if (error == OK) {
 
     stack_t *polish_notation = NULL;
     error = to_polish_notation(stack, &polish_notation);
+ 
     if(error == OK) {
       
       *result = calculation(&polish_notation, &error);
-      // printf("result = %f\n", *result);
+       
     }
     del_stack(&polish_notation);
   }
@@ -104,14 +104,14 @@ int expression_to_list(char *str, stack_t **stack, double x_val) {
         i += num_char;
         push(stack, d, 0, Num);
       } else if (*str == 'X') {
-        // push(stack, 0, 0, X);
         push(stack, x_val, 0, Num);
       } else if (*str == '+') {
         if (i == 0) {
           push(stack, 0, 1, UnPlus);
         } else if (*(str - 1) == '(') {
             push(stack, 0, 1, UnPlus);
-        } else if (*(str - 1) == ')' || (*(str - 1) >= '0' && *(str - 1) <= '9')){
+        } else if (*(str - 1) == ')' || (*(str - 1) >= '0' && *(str - 1) <= '9') || 
+                    *(str - 1) == 'X'){
           push(stack, 0, 1, Plus);
         } else {
           error = ERR;
@@ -121,7 +121,8 @@ int expression_to_list(char *str, stack_t **stack, double x_val) {
           push(stack, 0, 1, UnMinus);
         } else if (*(str - 1) == '(') {
             push(stack, 0, 1, UnMinus);
-        } else if (*(str - 1) == ')' || (*(str - 1) >= '0' && *(str - 1) <= '9')){
+        } else if (*(str - 1) == ')' || (*(str - 1) >= '0' && *(str - 1) <= '9') ||
+                      *(str - 1) == 'X'){
           push(stack, 0, 1, Minus);
         } else {
           error = ERR;

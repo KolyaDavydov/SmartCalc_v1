@@ -284,12 +284,14 @@ START_TEST(test_smart_calc_30) {
 }
 END_TEST
 
-// // START_TEST(test_smart_calc_31) {
-// //   char input[255] = "((-2-3+X)*3)";
-// //   int result = validation(input); 
-// //   ck_assert_int_eq(result, 0);
-// // }
-// // END_TEST
+START_TEST(test_smart_calc_31) {
+  char input[255] = "1.1+2.3";
+  double result;
+  int error = calc(input, &result, 0);
+  ck_assert_int_eq(OK, error);
+  ck_assert_double_eq(result, 3.4);
+}
+END_TEST
 
 // // START_TEST(test_smart_calc_32) {
 // //   char input[255] = "4((-2+X)3)";
@@ -352,7 +354,7 @@ int main() {
   tcase_add_test(tc1_1, test_smart_calc_28);
   tcase_add_test(tc1_1, test_smart_calc_29);
   tcase_add_test(tc1_1, test_smart_calc_30);
-  // // tcase_add_test(tc1_1, test_smart_calc_31);
+  tcase_add_test(tc1_1, test_smart_calc_31);
   // // tcase_add_test(tc1_1, test_smart_calc_32);
   // tcase_add_test(tc1_1, test_smart_calc_33);
   // // tcase_add_test(tc1_1, test_smart_calc_34);

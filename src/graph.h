@@ -4,6 +4,10 @@
 #include <QWidget>
 #include <QVector>
 
+extern "C" {
+#include "s21_smartcalc.h"
+}
+
 namespace Ui {
 class Graph;
 }
@@ -12,18 +16,17 @@ class Graph : public QWidget
 {
     Q_OBJECT
 
-public slots:
-    void recieveData(QString str_xmin, QString str_xmax, QString str_ymin, QString str_ymax, QString str);
-
 public:
     explicit Graph(QWidget *parent = nullptr);
     ~Graph();
 
+    void print_graph(QString function);
+
+private slots:
+    void push_draw();
+
 private:
     Ui::Graph *ui;
-    double x_begin, x_end, y_begin, y_end, X, h;
-    int N;
-    QVector <double> x,y;
 };
 
 #endif // GRAPH_H
