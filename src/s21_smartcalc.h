@@ -54,8 +54,10 @@ void del_averege_element(stack_t **result, stack_t *tmp);
 void function_calc(stack_t **stack, stack_t *tmp2, stack_t *tmp3);
 void arithmetic_calc(stack_t **stack, stack_t *tmp1, stack_t *tmp2, stack_t *tmp3, int *error);
 double calculation(stack_t **stack, int *error);
-
 int calc(char *str, double *result, double x_val);
 int check_formula(char *str);
+
+double **s21_annuity(double loan_amount, int period, double rate);
+double **s21_differentiated(double loan_amount, int period, double rate);
 
 #endif

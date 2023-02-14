@@ -14,6 +14,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     qcustomplot.cpp \
+    result_credit.cpp \
     s21_smartcalc.c
 
 HEADERS += \
@@ -21,12 +22,14 @@ HEADERS += \
     graph.h \
     mainwindow.h \
     qcustomplot.h \
+    result_credit.h \
     s21_smartcalc.h
 
 FORMS += \
     credit.ui \
     graph.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    result_credit.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

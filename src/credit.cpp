@@ -6,9 +6,28 @@ Credit::Credit(QWidget *parent) :
     ui(new Ui::Credit)
 {
     ui->setupUi(this);
+
+    connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(show_result()));
 }
 
 Credit::~Credit()
 {
     delete ui;
+}
+
+void Credit::show_result() {
+    result_credit_window = new Result_credit();
+    double sum = ui->spinBox_Sum->value();
+    double percent = ui->doubleSpinBox_Percent->value();
+    int months = ui->spinBox_Month->value();
+
+    double **result = NULL;
+    if (ui->radioButton_Ann->isChecked()) {
+        result = s21_annuity(sum, months, percent);
+        result_credit_window->show();
+    } else {
+        result = s21_differentiated(sum, months, percent);
+        result_credit_window->show();
+    }
+    result_credit_window->add_to_table(result, months);
 }
