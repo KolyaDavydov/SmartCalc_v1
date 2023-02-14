@@ -135,7 +135,7 @@ void MainWindow::print_dot() {
 void MainWindow::print_AC() {
 
     ui->label->setText("0");
-    ui->lineEdit_x->setText("");
+//    ui->lineEdit_x->setText("");
 }
 
 /**
@@ -155,10 +155,7 @@ void MainWindow::print_del() {
 void MainWindow::print_equal() {
     if (ui->label->text() != "0") {
             double result = 0.0;
-            double x = 0.0;
-            if (ui->lineEdit_x->text().isEmpty() != 1) {
-                x = ui->lineEdit_x->text().toDouble();
-            }
+            double x = ui->doubleSpinBox->value();
             // переводим из QString в string
 
             QString result_Qtext = ui->label->text();
@@ -173,6 +170,7 @@ void MainWindow::print_equal() {
 
             if (error == 0) {
                     QString str_tmp = QString::number(result);
+                    ui->label_2->setText(ui->label->text());
                     ui->label->setText(str_tmp);
             } else if (error == 2){
                 QMessageBox::critical(this, "WARNING", "деление на ноль");
@@ -188,9 +186,9 @@ void MainWindow::print_equal() {
  * @brief передает значение формулы в график (если формула правильная и есть Х)
  */
 void MainWindow::print_graph() {
-    if (ui->label->text() != "0" && ui->label->text().contains('X')) {
+//    if (ui->label->text() != "0") {
         double result = 0;
-        double x = 0;
+        double x = ui->doubleSpinBox->value();
         QString result_Qtext = ui->label->text();
         // почему то с ублюдской точкой не работает поэтому
         result_Qtext.replace(".", ",");
@@ -199,9 +197,9 @@ void MainWindow::print_graph() {
         char *result_text = qba.data();
         int error = check_formula((result_text));
         if (error == 0) {
-            if (ui->lineEdit_x->text().isEmpty() != 1) {
-                x = ui->lineEdit_x->text().toDouble();
-            }
+//            if (ui->lineEdit_x->text().isEmpty() != 1) {
+//                x = ui->lineEdit_x->text().toDouble();
+//            }
             error = calc(result_text, &result, x);
             if (error == 0) {
                 QString str_tmp = QString::number(result);
@@ -212,9 +210,9 @@ void MainWindow::print_graph() {
         } else {
             QMessageBox::critical(this, "WARNING", "вы ввели что то не так");
         }
-    } else {
-        QMessageBox::critical(this, "WARNING", "проверте формулу");
-    }
+//    } else {
+//        QMessageBox::critical(this, "WARNING", "проверте формулу");
+//    }
 
 
 }

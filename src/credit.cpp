@@ -29,5 +29,5 @@ void Credit::show_result() {
         result = s21_differentiated(sum, months, percent);
         result_credit_window->show();
     }
-    result_credit_window->add_to_table(result, months);
+    result_credit_window->add_to_table(result, months, sum, percent);
 }

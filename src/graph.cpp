@@ -34,28 +34,7 @@ void Graph::print_graph(QString function) {
     ui->label_function->setText(function);
 
     ui->custom_plot->clearGraphs();
-//    function.replace(".", ",");
-//    QByteArray qba = function.toLocal8Bit();
-//    char *function_on_c = qba.data();
 
-
-
-//    char *str = new char(function.length());
-//    QByteArray qba = function.toLatin1();
-//    strncpy(str, qba, function.length() + 1);
-
-//        double x_begin = ui->spinBox_min_x->value();
-//        double x_end = ui->spinBox_max_x->value();
-//        double y_begin = ui->spinBox_min_y->value();
-//        double y_end = ui->spinBox_max_y->value();
-
-//        double h = 1.01;
-//        double X;
-//        double res = 0.0;
-//        QVector<double> x, y;
-
-//            ui->custom_plot->xAxis->setRange(x_begin, x_end);
-//            ui->custom_plot->yAxis->setRange(y_begin, y_end);
     function.replace(".", ",");
     QByteArray qba = function.toLocal8Bit();
     char *function_on_c = qba.data();
@@ -83,9 +62,11 @@ void Graph::print_graph(QString function) {
     }
     ui->custom_plot->addGraph();
     ui->custom_plot->graph(0)->addData(x,y);
+    ui->custom_plot->graph(0)->setPen(QColor(0,0,255,255));
+    ui->custom_plot->graph(0)->setLineStyle((QCPGraph::lsNone));
+    ui->custom_plot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 1));
     ui->custom_plot->replot();
+
     x.clear();
     y.clear();
-
-
 }

@@ -783,7 +783,7 @@ QPushButton:pressed {
 }</string>
     </property>
     <property name="text">
-     <string>lg</string>
+     <string>log</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_sqrt">
@@ -841,10 +841,10 @@ QPushButton:pressed {
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
+      <x>10</x>
+      <y>20</y>
       <width>351</width>
-      <height>51</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -934,20 +934,10 @@ QPushButton:pressed {
      <string>X</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_x">
-    <property name="geometry">
-     <rect>
-      <x>260</x>
-      <y>265</y>
-      <width>101</width>
-      <height>37</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton_Graphics">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>230</x>
       <y>330</y>
       <width>131</width>
       <height>51</height>
@@ -988,7 +978,7 @@ QPushButton:pressed {
      <rect>
       <x>10</x>
       <y>330</y>
-      <width>201</width>
+      <width>211</width>
       <height>51</height>
      </rect>
     </property>
@@ -1020,6 +1010,51 @@ QPushButton:pressed {
     </property>
     <property name="text">
      <string>Кредитный калькулятор</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="doubleSpinBox">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>264</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <double>-100000000000.000000000000000</double>
+    </property>
+    <property name="maximum">
+     <double>100000000000.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>361</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Ubuntu</family>
+      <pointsize>10</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 10pt &quot;Ubuntu&quot;;
+font: rgb(28, 113, 216);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
   </widget>

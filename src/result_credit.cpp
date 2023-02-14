@@ -13,11 +13,14 @@ Result_credit::~Result_credit()
     delete ui;
 }
 
-void Result_credit::add_to_table(double **result, int period) {
+void Result_credit::add_to_table(double **result, int months, double sum, double percent) {
+  ui->label_sum->setText(QString::number(sum));
+  ui->label_month->setText(QString::number(months));
+  ui->label_percent->setText(QString::number(percent));
   double total_sum = 0.0;
   double all_percent = 0.0;
   QDate date = QDate::currentDate();
-  for (int i = 0; i < period; i++) {
+  for (int i = 0; i < months; i++) {
     ui->tableWidget->insertRow(i);
     ui->tableWidget->setItem(
         i, 0, new QTableWidgetItem(date.toString("MMM yyyy")));
@@ -37,7 +40,7 @@ void Result_credit::add_to_table(double **result, int period) {
   }
   ui->tableWidget->resizeColumnsToContents();
 
-  for (int i = 0; i < period; i++) {
+  for (int i = 0; i < months; i++) {
     free(result[i]);
   }
   free(result);

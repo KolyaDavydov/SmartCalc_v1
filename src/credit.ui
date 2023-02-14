@@ -36,10 +36,13 @@
     </rect>
    </property>
    <property name="minimum">
-    <number>3</number>
+    <number>12</number>
    </property>
    <property name="maximum">
     <number>360</number>
+   </property>
+   <property name="singleStep">
+    <number>3</number>
    </property>
    <property name="displayIntegerBase">
     <number>10</number>
@@ -148,7 +151,7 @@
     <string>Расчитать платежи</string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -168,6 +171,9 @@
       </property>
       <property name="singleStep">
        <number>10000</number>
+      </property>
+      <property name="value">
+       <number>100000</number>
       </property>
      </widget>
     </item>

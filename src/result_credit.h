@@ -15,7 +15,7 @@ class Result_credit : public QWidget
 public:
     explicit Result_credit(QWidget *parent = nullptr);
     ~Result_credit();
-      void add_to_table(double **result, int period);
+      void add_to_table(double **result, int months, double sum, double percent);
 
 private:
     Ui::Result_credit *ui;
