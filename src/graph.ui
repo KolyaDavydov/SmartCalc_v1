@@ -65,12 +65,12 @@ QPushButton:pressed {
     <rect>
      <x>80</x>
      <y>10</y>
-     <width>301</width>
+     <width>581</width>
      <height>21</height>
     </rect>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>0</x>

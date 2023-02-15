@@ -23,10 +23,10 @@ void Credit::show_result() {
 
     double **result = NULL;
     if (ui->radioButton_Ann->isChecked()) {
-        result = s21_annuity(sum, months, percent);
+        result = annuity_credit_calc(sum, months, percent);
         result_credit_window->show();
     } else {
-        result = s21_differentiated(sum, months, percent);
+        result = dif_credit_calc(sum, months, percent);
         result_credit_window->show();
     }
     result_credit_window->add_to_table(result, months, sum, percent);

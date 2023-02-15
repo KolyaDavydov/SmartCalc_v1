@@ -57,7 +57,7 @@ double calculation(stack_t **stack, int *error);
 int calc(char *str, double *result, double x_val);
 int check_formula(char *str);
 
-double **s21_annuity(double loan_amount, int period, double rate);
-double **s21_differentiated(double loan_amount, int period, double rate);
+double **annuity_credit_calc(double sum, int months, double rate);
+double **dif_credit_calc(double sum, int months, double rate);
 
 #endif
