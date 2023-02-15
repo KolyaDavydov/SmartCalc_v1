@@ -2,6 +2,7 @@
 #define CREDIT_H
 
 #include <QWidget>
+
 #include "result_credit.h"
 
 extern "C" {
@@ -12,20 +13,19 @@ namespace Ui {
 class Credit;
 }
 
-class Credit : public QWidget
-{
-    Q_OBJECT
+class Credit : public QWidget {
+  Q_OBJECT
 
-public:
-    explicit Credit(QWidget *parent = nullptr);
-    ~Credit();
+ public:
+  explicit Credit(QWidget *parent = nullptr);
+  ~Credit();
 
-private slots:
-    void show_result();
+ private slots:
+  void show_result();
 
-private:
-    Ui::Credit *ui;
-    Result_credit *result_credit_window;
+ private:
+  Ui::Credit *ui;
+  Result_credit *result_credit_window;
 };
 
-#endif // CREDIT_H
+#endif  // CREDIT_H

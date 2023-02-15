@@ -2,22 +2,21 @@
 #include "s21_smartcalc.h"
 
 int calc(char *str, double *result, double x_val) {
-
   stack_t *stack = NULL;
-  
-  int error = check_formula(str);
+
+  int error = 0;
+
+  if (strlen(str) > 255) error = 1;
+
+  error = check_formula(str);
 
   if (error == OK) error = expression_to_list(str, &stack, x_val);
-      //  printf("result = %d\n", error);
   if (error == OK) {
-
     stack_t *polish_notation = NULL;
     error = to_polish_notation(stack, &polish_notation);
- 
-    if(error == OK) {
-      
+
+    if (error == OK) {
       *result = calculation(&polish_notation, &error);
-       
     }
     del_stack(&polish_notation);
   }
@@ -29,22 +28,23 @@ int calc(char *str, double *result, double x_val) {
  * @brief преобразует стэк с обычной записью в стэк обратной польской нотацией
  *
  * @param stack стэк с обычной записью лексем
- * 
+ *
  * @param polish_notation стэк лексем обратной польской нотации
  *
  * @returns номер ошибки, OK или ERR
-*/
+ */
 int to_polish_notation(stack_t *stack, stack_t **polish_notation) {
   int error = OK;
-  stack_t *tmp = {0}; // вспомогательный стэк
-  
+  stack_t *tmp = {0};  // вспомогательный стэк
+
   while (stack && error != ERR) {
     if (peek_type(stack) != CloseBrace) {
       if (peek_type(stack) == Num || peek_type(stack) == X) {
         push(polish_notation, stack->value, stack->priority, peek_type(stack));
       } else {
         while (1) {
-          if ((more_priority(tmp, stack->priority)) || peek_type(stack) == OpenBrace) {
+          if ((more_priority(tmp, stack->priority)) ||
+              peek_type(stack) == OpenBrace) {
             push(&tmp, stack->value, stack->priority, peek_type(stack));
             break;
           } else {
@@ -62,7 +62,7 @@ int to_polish_notation(stack_t *stack, stack_t **polish_notation) {
         }
         pop(&tmp);
       }
-      pop(&tmp); 
+      pop(&tmp);
     }
     stack = stack->next;
   }
@@ -70,32 +70,33 @@ int to_polish_notation(stack_t *stack, stack_t **polish_notation) {
     push(polish_notation, tmp->value, tmp->priority, tmp->type);
     pop(&tmp);
   }
-    *polish_notation = reverse(polish_notation);
-    return error;
+  *polish_notation = reverse(polish_notation);
+  return error;
 }
 
 /**
  * @brief преобразует выражение-строку в "стэк"
  *
  * @param str выражение строка
- * 
+ *
  * @param stack адрес верхнего элемента стэка
- * 
+ *
  * @param x_val значение поля 'x' в калькуляторе
  *
  * @returns номер ошибки, OK или ERR
-*/
+ */
 int expression_to_list(char *str, stack_t **stack, double x_val) {
   int error = OK;
   int brace = 0;
   int expression_len = strlen(str);
-  
-  if (str[0] == ')' || str[0] == '^' || str[0] == '*' || str[0] == '/' || str[0] == '.') {
+
+  if (str[0] == ')' || str[0] == '^' || str[0] == '*' || str[0] == '/' ||
+      str[0] == '.') {
     error = ERR;
   } else {
-    for(int i = 0, j = 0; i < expression_len; i++, str++, j++) {
+    for (int i = 0, j = 0; i < expression_len; i++, str++, j++) {
       int num_char = 0;
-      
+
       if (*str >= '0' && *str <= '9') {
         char *end_num_str = str;
         double d = strtod(str, &end_num_str);
@@ -109,9 +110,10 @@ int expression_to_list(char *str, stack_t **stack, double x_val) {
         if (i == 0) {
           push(stack, 0, 1, UnPlus);
         } else if (*(str - 1) == '(') {
-            push(stack, 0, 1, UnPlus);
-        } else if (*(str - 1) == ')' || (*(str - 1) >= '0' && *(str - 1) <= '9') || 
-                    *(str - 1) == 'X'){
+          push(stack, 0, 1, UnPlus);
+        } else if (*(str - 1) == ')' ||
+                   (*(str - 1) >= '0' && *(str - 1) <= '9') ||
+                   *(str - 1) == 'X') {
           push(stack, 0, 1, Plus);
         } else {
           error = ERR;
@@ -120,9 +122,10 @@ int expression_to_list(char *str, stack_t **stack, double x_val) {
         if (i == 0) {
           push(stack, 0, 1, UnMinus);
         } else if (*(str - 1) == '(') {
-            push(stack, 0, 1, UnMinus);
-        } else if (*(str - 1) == ')' || (*(str - 1) >= '0' && *(str - 1) <= '9') ||
-                      *(str - 1) == 'X'){
+          push(stack, 0, 1, UnMinus);
+        } else if (*(str - 1) == ')' ||
+                   (*(str - 1) >= '0' && *(str - 1) <= '9') ||
+                   *(str - 1) == 'X') {
           push(stack, 0, 1, Minus);
         } else {
           error = ERR;
@@ -141,31 +144,31 @@ int expression_to_list(char *str, stack_t **stack, double x_val) {
         push(stack, 0, 2, Mod);
       } else if (*str == '^') {
         push(stack, 0, 3, Pow);
-      } else if (strncmp(str, "sin", 3) == 0) { // sin
+      } else if (strncmp(str, "sin", 3) == 0) {  // sin
         push(stack, 0, 4, Sin);
         str += 2, i += 2;
-      } else if (strncmp(str, "asin", 4) == 0) { // asin
+      } else if (strncmp(str, "asin", 4) == 0) {  // asin
         push(stack, 0, 4, Asin);
         str += 3, i += 3;
-      } else if (strncmp(str, "cos", 3) == 0) { // cos
+      } else if (strncmp(str, "cos", 3) == 0) {  // cos
         push(stack, 0, 4, Cos);
         str += 2, i += 2;
-      } else if (strncmp(str, "acos", 4) == 0) { // acos
+      } else if (strncmp(str, "acos", 4) == 0) {  // acos
         push(stack, 0, 4, Acos);
         str += 3, i += 3;
-      } else if (strncmp(str, "tan", 3) == 0) { // tan
+      } else if (strncmp(str, "tan", 3) == 0) {  // tan
         push(stack, 0, 4, Tan);
         str += 2, i += 2;
-      } else if (strncmp(str, "atan", 4) == 0) { // atan
+      } else if (strncmp(str, "atan", 4) == 0) {  // atan
         push(stack, 0, 4, Atan);
         str += 3, i += 3;
-      } else if (strncmp(str, "sqrt", 4) == 0) { // sqrt
+      } else if (strncmp(str, "sqrt", 4) == 0) {  // sqrt
         push(stack, 0, 4, Sqrt);
         str += 3, i += 3;
-      } else if (strncmp(str, "ln", 2) == 0) { // ln
+      } else if (strncmp(str, "ln", 2) == 0) {  // ln
         push(stack, 0, 4, Ln);
-        str++, i ++;
-      } else if (strncmp(str, "log", 3) == 0) { // log
+        str++, i++;
+      } else if (strncmp(str, "log", 3) == 0) {  // log
         push(stack, 0, 4, Log);
         str += 2, i += 2;
       } else {
@@ -178,7 +181,7 @@ int expression_to_list(char *str, stack_t **stack, double x_val) {
       }
     }
   }
-  
+
   if (brace != 0) error = ERR;
   if (error == OK) {
     *stack = reverse(stack);
@@ -188,31 +191,27 @@ int expression_to_list(char *str, stack_t **stack, double x_val) {
 
 /**
  * @brief возвращает тип лексемы переданного элемента стэка
- * 
+ *
  * @param stack адрес верхнего элемента стэка
  *
  * @returns тип переданной лексемы преобрахованной к int
-*/
-int peek_type(stack_t *stack) { 
-  return stack->type;
-}
+ */
+int peek_type(stack_t *stack) { return stack->type; }
 
 /**
  * @brief помещает элемент в стэк
  *
  * @param element адрес текущего верхнего элемента стека
- * 
+ *
  * @param value значение помещаемой лексемы, если не число, то 0
- * 
+ *
  * @param priority приоретет помещаемой лексемы
- * 
+ *
  * @param type тип помещаемой лексемы
-*/
+ */
 void push(stack_t **element, double value, int priority, type_t type) {
-
   stack_t *new_element = calloc(1, sizeof(stack_t));
   if (new_element != NULL) {
-    
     new_element->value = value;
     new_element->priority = priority;
     new_element->type = type;
@@ -225,7 +224,7 @@ void push(stack_t **element, double value, int priority, type_t type) {
  * @brief удалает верхний элемент стэка и меняет адрес на нижележащий
  *
  * @param element адрес удаляемого верхнего элемента стека
-*/
+ */
 void pop(stack_t **top_element) {
   if (*top_element != NULL) {
     stack_t *tmp = (*top_element)->next;
@@ -236,11 +235,11 @@ void pop(stack_t **top_element) {
 
 /**
  * @brief меняет стэк наоборот и самый нижний элемент становится верхним
- * 
+ *
  * @param stack адрес верхнего элемента стэка до разворота
  *
  * @returns адрес развернутого стэка
-*/
+ */
 stack_t *reverse(stack_t **stack) {
   stack_t *new_stack = NULL;
   while (*stack != NULL) {
@@ -252,13 +251,13 @@ stack_t *reverse(stack_t **stack) {
 
 /**
  * @brief сравнение приоритетов
- * 
+ *
  * @param stack стэк с которым сравниваем
- * 
+ *
  * @param priority значение приоритета другой лексемы
  *
  * @returns 1 - если приоритет priority выше, 0 - в противном случае
-*/
+ */
 int more_priority(stack_t *stack, int priority) {
   int priority_right = 0;
   if (stack != NULL) {
@@ -273,9 +272,9 @@ int more_priority(stack_t *stack, int priority) {
 
 /**
  * @brief полностью удаляет и освобождает память от стэка
- * 
+ *
  * @param stack адрес верхнего элемента стэка
-*/
+ */
 void del_stack(stack_t **stack) {
   while (*stack != NULL) {
     stack_t *tmp = *stack;
@@ -286,10 +285,10 @@ void del_stack(stack_t **stack) {
 
 /**
  * @brief вычисляет значение выражение в обратной польской нотации
- * результат в итоге храниться 
- * 
+ * результат в итоге храниться
+ *
  * @param stack адрес верхнего элемента стэка
-*/
+ */
 double calculation(stack_t **stack, int *error) {
   // print_stack(*stack);
   double result = 0;
@@ -322,19 +321,19 @@ double calculation(stack_t **stack, int *error) {
 
 /**
  * @brief выполнение арифметической операции польской нотации
- * 
+ *
  * @param stack адрес верхнего элемента стэка
- * 
+ *
  * @param tmp1 лексема - число которое находится на два выше
  * чем первая арифметическая операция
- * 
- * @param tmp2 лексема - число которое находится над 
+ *
+ * @param tmp2 лексема - число которое находится над
  * высшей арифметической операцией
- * 
+ *
  * @param tmp3 лексема - самая верхняя арифметическая операция
-*/
+ */
 void arithmetic_calc(stack_t **stack, stack_t *tmp1, stack_t *tmp2,
-                      stack_t *tmp3, int * error) {
+                     stack_t *tmp3, int *error) {
   double num_stack = 0;
   double a = tmp1->value;
   double b = tmp2->value;
@@ -345,7 +344,7 @@ void arithmetic_calc(stack_t **stack, stack_t *tmp1, stack_t *tmp2,
   } else if (peek_type(tmp3) == Mult) {
     num_stack = a * b;
   } else if (peek_type(tmp3) == Div) {
-    if(b == 0.0) {
+    if (b == 0.0) {
       *error = ERR_DIV_ZERO;
     } else {
       num_stack = a / b;
@@ -365,14 +364,14 @@ void arithmetic_calc(stack_t **stack, stack_t *tmp1, stack_t *tmp2,
 
 /**
  * @brief выполнение тригонометрические и унарные операции польской нотации
- * 
+ *
  * @param stack адрес верхнего элемента стэка
- * 
- * @param tmp2 лексема - число которое находится над 
+ *
+ * @param tmp2 лексема - число которое находится над
  * высшей тригонометрической лексемой или унарной
- * 
+ *
  * @param tmp3 лексема - самая верхняя тригонометрия или унарный
-*/
+ */
 void function_calc(stack_t **stack, stack_t *tmp2, stack_t *tmp3) {
   double a = 0;
   double num_stack = 0;
@@ -408,11 +407,11 @@ void function_calc(stack_t **stack, stack_t *tmp2, stack_t *tmp3) {
 
 /**
  * @brief удаляет определенный элемент стека
- * 
+ *
  * @param result адрес верхнего элемента стэка
- * 
+ *
  * @param tmp элемент который необходимо удалить из стэка result
-*/
+ */
 void del_averege_element(stack_t **result, stack_t *tmp) {
   stack_t *tmp_in_function = {0};
   tmp_in_function = *result;
@@ -431,11 +430,11 @@ void del_averege_element(stack_t **result, stack_t *tmp) {
 
 /**
  * @brief проверяет формулу на корректность написания
- * 
+ *
  * @param str формула
- * 
- * @returns номер ошибки, OK или ERR 
-*/
+ *
+ * @returns номер ошибки, OK или ERR
+ */
 int check_formula(char *str) {
   int error = OK;
   int i = 0;
@@ -448,8 +447,8 @@ int check_formula(char *str) {
     } else {
       int bracket = 0;
       while (str[i] != '\0') {
-        if ((str[i] == '*' || str[i] == '.' || str[i] == '^' ||
-             str[i] == '%' || str[i] == '/') &&
+        if ((str[i] == '*' || str[i] == '.' || str[i] == '^' || str[i] == '%' ||
+             str[i] == '/') &&
             ((str[i + 1] >= 41 && str[i + 1] <= 47) || str[i + 1] == '^' ||
              str[i + 1] == '%')) {
           if ((str[i] != ')' && str[i - 1] != ')') ||
@@ -457,10 +456,9 @@ int check_formula(char *str) {
             error = ERR;
             break;
           }
-        } else if (str[i] == '(' &&
-                   (str[i + 1] == ')' || str[i + 1] == '*' ||
-                    str[i + 1] == '%' || str[i + 1] == '^' ||
-                   str[i + 1] == '.' || str[i + 1] == '/')) {
+        } else if (str[i] == '(' && (str[i + 1] == ')' || str[i + 1] == '*' ||
+                                     str[i + 1] == '%' || str[i + 1] == '^' ||
+                                     str[i + 1] == '.' || str[i + 1] == '/')) {
           error = ERR;
           break;
         } else if (str[i] == '*' || str[i] == '+' || str[i] == '/' ||
@@ -481,28 +479,29 @@ int check_formula(char *str) {
             break;
           }
         } else if (str[i] == '%' && ((str[i + 1] != '(') &&
-                  (str[i + 1] < '0' && str[i + 1] > '9'))) {
+                                     (str[i + 1] < '0' && str[i + 1] > '9'))) {
           error = ERR;
           break;
         }
-        if (str[i] == 'X' && i >= 0 && ((str[i + 1] >= '0' && str[i + 1] <= '9') || 
-                      str[i + 1] == '.' || str[i + 1] == 'X')) {
+        if (str[i] == 'X' && i >= 0 &&
+            ((str[i + 1] >= '0' && str[i + 1] <= '9') || str[i + 1] == '.' ||
+             str[i + 1] == 'X')) {
           error = ERR;
           break;
         }
-        if (str[i] == 'X' && i >= 1 && ((str[i - 1] >= '0' && str[i - 1] <= '9') || 
-                      str[i - 1] == '.' || str[i - 1] == 'X')) {
+        if (str[i] == 'X' && i >= 1 &&
+            ((str[i - 1] >= '0' && str[i - 1] <= '9') || str[i - 1] == '.' ||
+             str[i - 1] == 'X')) {
           error = ERR;
           break;
-        }           
+        }
         i++;
         if (i == len && bracket == 0) {
-          if ((str[i - 1] >= '0' && str[i - 1] <= '9') ||
-              str[i - 1] == ')' || str[i - 1] == 'X') {
+          if ((str[i - 1] >= '0' && str[i - 1] <= '9') || str[i - 1] == ')' ||
+              str[i - 1] == 'X') {
             error = 0;
           }
         }
-     
       }
     }
   }
@@ -519,7 +518,7 @@ int check_formula(char *str) {
  * @param percent ставка годовых %
  *
  * @returns расчет ежемесячных платежей
-*/
+ */
 double **annuity_credit_calc(double sum, int months, double percent) {
   double **result = calloc(months, sizeof(double *));
   for (int i = 0; i < months; i++) {
@@ -531,8 +530,9 @@ double **annuity_credit_calc(double sum, int months, double percent) {
   int i = 1;
   double percent_on_month = percent / 1200;
 
-  double sum_month = sum * ((percent_on_month * pow(1 + percent_on_month, months)) /
-          (pow(1 + percent_on_month, months) - 1));
+  double sum_month =
+      sum * ((percent_on_month * pow(1 + percent_on_month, months)) /
+             (pow(1 + percent_on_month, months) - 1));
   sum_month = (round(sum_month * 100)) / 100;
 
   double percent_sum_first_month = sum * percent_on_month;
@@ -578,7 +578,7 @@ double **annuity_credit_calc(double sum, int months, double percent) {
  * @param percent ставка годовых %
  *
  * @returns расчет ежемесячных платежей
-*/
+ */
 double **dif_credit_calc(double sum, int months, double percent) {
   double **result = calloc(months, sizeof(double *));
   for (int i = 0; i < months; i++) {
@@ -606,7 +606,6 @@ double **dif_credit_calc(double sum, int months, double percent) {
   }
   return result;
 }
-
 
 // void print_stack(stack_t *list) {
 //   printf("- * - * -\n");

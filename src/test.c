@@ -1,8 +1,8 @@
-#include "s21_smartcalc.h"
-
 #include <check.h>
 #include <math.h>
 #include <string.h>
+
+#include "s21_smartcalc.h"
 
 START_TEST(test_smart_calc_1) {
   char input[255] = "3+4*2/(1-5)^2";
@@ -33,7 +33,7 @@ END_TEST
 
 START_TEST(test_smart_calc_4) {
   char input[255] = "(8+2*5)/(1+3*2-4)";
-  
+
   double result;
   int error = calc(input, &result, 0);
   ck_assert_int_eq(OK, error);
@@ -44,7 +44,7 @@ END_TEST
 START_TEST(test_smart_calc_5) {
   char input[255] =
       "(15/(7-(1+1))*3-(2+(1+1-1+1*2/2))+15/(7-(1+1))*3-(2+(1+1+1-1*2/2)))";
-  
+
   double result;
   int error = calc(input, &result, 0);
   ck_assert_int_eq(OK, error);
@@ -67,7 +67,7 @@ START_TEST(test_smart_calc_7) {
       "2)))-1";
   double result;
   int error = calc(input, &result, 0);
-  ck_assert_int_eq(OK, error); 
+  ck_assert_int_eq(OK, error);
   ck_assert_double_eq_tol(result, -1.83907152908, 1e-06);
 }
 END_TEST
@@ -223,7 +223,9 @@ START_TEST(test_smart_calc_23) {
 END_TEST
 
 START_TEST(test_smart_calc_24) {
-  char input[255] = "15/(7-(1+1))*3-(2+(1+1))*15/(7-(200+1))*3-(2+(1+1))*(15/(7-(1+1))*3-(2+(1+1))+15/(7-(1+1))*3-(2+(1+1)))";
+  char input[255] =
+      "15/(7-(1+1))*3-(2+(1+1))*15/(7-(200+1))*3-(2+(1+1))*(15/"
+      "(7-(1+1))*3-(2+(1+1))+15/(7-(1+1))*3-(2+(1+1)))";
   double result;
   int error = calc(input, &result, 0);
   ck_assert_int_eq(OK, error);
@@ -271,8 +273,6 @@ START_TEST(test_smart_calc_29) {
   int error = calc(input, &result, x);
   ck_assert_int_eq(OK, error);
   ck_assert_int_eq((int)result, -3);
-  
-  
 }
 END_TEST
 
@@ -293,29 +293,37 @@ START_TEST(test_smart_calc_31) {
 }
 END_TEST
 
-// // START_TEST(test_smart_calc_32) {
-// //   char input[255] = "4((-2+X)3)";
-// //   int result = validation(input); 
-// //   ck_assert_int_eq(result, 0);
-// // }
-// // END_TEST
+START_TEST(test_smart_calc_32) {
+  double **res = annuity_credit_calc(100000, 2, 7.1);
+  ck_assert_int_eq(res[0][0], 1);
+  ck_assert_double_eq(res[0][1], 50444.19);
+  ck_assert_double_eq(res[0][2], 49852.52);
+  ck_assert_double_eq(res[0][3], 591.67);
+  ck_assert_double_eq(res[0][4], 50147.48);
 
-// START_TEST(test_smart_calc_33) {
-//   double X= 2;
-//   char input[255] = "4((-3+X)2)";
-//   double result = pull_stack(input, X);
-//   ck_assert_int_eq((int)result, -8);
-// }
-// END_TEST
+  ck_assert_int_eq(res[1][0], 2);
+  ck_assert_double_eq(res[1][1], 50444.19);
+  ck_assert_double_eq(res[1][2], 50147.48);
+  ck_assert_double_eq(res[1][3], 296.71);
+  ck_assert_double_eq(res[1][4], 0);
+}
+END_TEST
 
-// // START_TEST(test_smart_calc_34) {
-// //   double X= 2;
-// //   char input[255] = "2^2^3";
-// //   double result = pull_stack(input, X);
-// //   ck_assert_int_eq((int)result, 264);
-// // }
-// // END_TEST
+START_TEST(test_smart_calc_33) {
+  double **res = dif_credit_calc(100000, 2, 7.1);
+  ck_assert_int_eq(res[0][0], 1);
+  ck_assert_double_eq(res[0][1], 50591.67);
+  ck_assert_double_eq(res[0][2], 50000);
+  ck_assert_double_eq(res[0][3], 591.67);
+  ck_assert_double_eq(res[0][4], 50000);
 
+  ck_assert_int_eq(res[1][0], 2);
+  ck_assert_double_eq(res[1][1], 50295.83);
+  ck_assert_double_eq(res[1][2], 50000);
+  ck_assert_double_eq(res[1][3], 295.83);
+  ck_assert_double_eq(res[1][4], 0);
+}
+END_TEST
 
 int main() {
   Suite *s1 = suite_create("s21_smart_calc: ");
@@ -355,9 +363,8 @@ int main() {
   tcase_add_test(tc1_1, test_smart_calc_29);
   tcase_add_test(tc1_1, test_smart_calc_30);
   tcase_add_test(tc1_1, test_smart_calc_31);
-  // // tcase_add_test(tc1_1, test_smart_calc_32);
-  // tcase_add_test(tc1_1, test_smart_calc_33);
-  // // tcase_add_test(tc1_1, test_smart_calc_34);
+  tcase_add_test(tc1_1, test_smart_calc_32);
+  tcase_add_test(tc1_1, test_smart_calc_33);
 
   srunner_run_all(sr, CK_NORMAL);
   result = srunner_ntests_failed(sr);
