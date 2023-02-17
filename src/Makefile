@@ -46,9 +46,8 @@ dvi:
 	$(TETEX) smartcalc.tex
 	rm *.aux *.log *.fdb_latexmk *.fls
 
-dist:
-	mkdir ../build
-	tar -cf ../build/calcV1.tar ../app/SmartCalcV1
+dist: install
+	tar -cf ../SmartCalcV1.tar ../build
 
 leaks: test
 	valgrind --leak-check=full --quiet ./run
