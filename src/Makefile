@@ -1,10 +1,10 @@
-CC=gcc
+CC=gcc -O0 -g
 CFLAGS=-std=c11 -Wall -Werror -Wextra
 PROFILE_FLAGS = -fprofile-arcs -ftest-coverage
 LIBSOURCES=s21_smartcalc.c
 LIBOBJECTS=$(LIBSOURCES:.c=.o)
 
-TETEX += /usr/bin/texi2dvi
+TETEX=texi2dvi
 
 OS = $(shell uname)
 
@@ -14,7 +14,7 @@ else
 	CHECKFLAGS=-lcheck -lm -lpthread
 endif
 
-all: gcov_report
+all: test
 
 s21_smartcalc.a: $(LIBOBJECTS)
 	ar -crs s21_smartcalc.a $(LIBOBJECTS)
@@ -29,7 +29,7 @@ gcov_report: test
 	genhtml -o report report.info
 	open ./report/index.html
 
-install: test clean cppcheak
+install: test cppcheck
 	mkdir ../build
 	cd ../build; qmake ../src/SmartCalcV1.pro
 	make -C ../build
@@ -37,21 +37,32 @@ install: test clean cppcheak
 uninstall: clean
 	rm -rf ../build
 
-cppcheak:
+cppcheck:
 	cp ../materials/linters/.clang-format .clang-format
 	clang-format -n *.c *.h *.cpp
 	rm .clang-format
+
+dvi:
+	$(TETEX) smartcalc.tex
+	rm *.aux *.log *.fdb_latexmk *.fls
 
 dist:
 	mkdir ../build
 	tar -cf ../build/calcV1.tar ../app/SmartCalcV1
 
-leaks:
-	valgrind  --undef-value-errors=yes --leak-check=full --show-leak-kinds=all -s ./../build/SmartCalcV1
+leaks: test
+	valgrind --leak-check=full --quiet ./run
 
 clean:
 	rm -rf *.o \
 					*.a \
+					*.aux \
+					*.dvi \
+					*.fdb_latexmk \
+					*.fls \
+					*.log \
+					*.pdf \
+					*.gz \
 					*.txt \
 					*.so \
 					*.gcno \
@@ -62,11 +73,11 @@ clean:
 					*.out \
 					unit-test \
 					vtests_run \
+					*.dvi \
 					run \
 					SmartCalcV1 \
 					.qmake.stash \
 					gcov \
 					report/ \
 					../app/ \
-					../build/ \
 					report.info

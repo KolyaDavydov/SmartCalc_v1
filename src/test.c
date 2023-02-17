@@ -306,6 +306,10 @@ START_TEST(test_smart_calc_32) {
   ck_assert_double_eq(res[1][2], 50147.48);
   ck_assert_double_eq(res[1][3], 296.71);
   ck_assert_double_eq(res[1][4], 0);
+  for (int i = 0; i < 2; i++) {
+    free(res[i]);
+  }
+  free(res);
 }
 END_TEST
 
@@ -322,6 +326,11 @@ START_TEST(test_smart_calc_33) {
   ck_assert_double_eq(res[1][2], 50000);
   ck_assert_double_eq(res[1][3], 295.83);
   ck_assert_double_eq(res[1][4], 0);
+
+  for (int i = 0; i < 2; i++) {
+    free(res[i]);
+  }
+  free(res);
 }
 END_TEST
 

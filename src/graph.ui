@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>График</string>
+   <string>ГРАФИК</string>
   </property>
   <widget class="QCustomPlot" name="custom_plot" native="true">
    <property name="geometry">

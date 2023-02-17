@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>КАЛЬКУЛЯТОР</string>
   </property>
   <property name="styleSheet">
    <string notr="true">font: 75 11pt &quot;Mukti&quot;;</string>
