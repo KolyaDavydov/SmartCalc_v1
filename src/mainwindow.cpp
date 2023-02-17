@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 
-#include <QDebug>
-
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -160,7 +158,6 @@ void MainWindow::print_equal() {
     QString result_Qtext = ui->label->text();
     // почему то с ублюдской точкой не работает поэтому
     result_Qtext.replace(".", ",");
-    qDebug() << result_Qtext;
     QByteArray qba = result_Qtext.toLocal8Bit();
     char *result_text = qba.data();
 
